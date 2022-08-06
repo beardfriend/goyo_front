@@ -1,26 +1,37 @@
 {
+  "extends": "./tsconfig.paths.json",
   "compilerOptions": {
-    "target": "es5",
+    "target": "es6",
+    "jsx": "react-jsx",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "noUnusedLocals": false,
+    "noImplicitAny": false,
+    "pretty": true,
+    "sourceMap": true,
+    "resolveJsonModule": true,
+    "noLib": false,
+    "allowSyntheticDefaultImports": true,
+    "downlevelIteration": true,
     "lib": [
+      "es2018",
       "dom",
-      "dom.iterable",
-      "esnext"
+      "es2019"
     ],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
     "strict": true,
+    "noUnusedParameters": false,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
-    "module": "esnext",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react-jsx"
+    "noEmit": true
+    
   },
-  "include": [
-    "src"
-  ]
+  "typedocOptions": {
+    "mode": "modules",
+    "out": "docs"
+  },
+  "include": ["./src/**/*.ts", "./src/**/*.tsx", "@type", "craco.config.js"]
 }

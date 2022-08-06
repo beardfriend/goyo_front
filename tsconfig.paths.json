@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "baseUrl": "src",
+    "rootDir":".",
+    "paths": {
+      "@Features/*" :["./features/*"],
+      "@Libs/*" :["./libs/*"],
+      "@Shared/*" :["./shared/*"],
+      "@Assets/*" :["./assets/*"]
+    }
+  }
+}
