@@ -31,7 +31,7 @@ export const academySlice = createSlice({
     [GET_CATEGORY.fulfilled.type](state, action) {
       state.category.status.isLoading = false;
       if (action.payload.result !== null) {
-        state.category.data = action.payload.result;
+        state.category.responseData = action.payload.result;
       }
     },
     [GET_CATEGORY.rejected.type](state) {

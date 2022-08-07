@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import GoyoApi from '@Shared/api/goyo';
 import styled from '@emotion/styled/macro';
 import MobileHeader from '@Shared/layout/header/components/MobileHeader';
 import SearchDataList from '../components/SearchDataList';
@@ -43,7 +42,7 @@ function AcademyListPage() {
           isListShow={isListShow}
           onChange={onChangeInput}
         />
-        <SearchDataList isShow={isListShow} datas={data.data} />
+        <SearchDataList isShow={isListShow} datas={data.responseData} />
       </MainWrapper>
     </Container>
   );

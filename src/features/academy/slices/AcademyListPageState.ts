@@ -3,7 +3,7 @@ export interface IAcademySlice {
     query: {
       keyword: string;
     };
-    data: [
+    responseData: [
       {
         id: number;
         name: string;
@@ -20,7 +20,7 @@ export const academyinitialState: IAcademySlice = {
     query: {
       keyword: ''
     },
-    data: [
+    responseData: [
       {
         id: 0,
         name: ''
