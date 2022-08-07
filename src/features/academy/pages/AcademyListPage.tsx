@@ -13,7 +13,7 @@ import {
   setSearchKeyword
 } from '../slices/AcademyListPageSlice';
 import { useAppDispatch } from '@Apps/store';
-import DataList from '../components/DataList';
+import DataList, { ListContainer } from '../components/DataList';
 
 function AcademyListPage() {
   const dispatch = useAppDispatch();
@@ -68,21 +68,7 @@ function AcademyListPage() {
         />
 
         <DataListWrapper>
-          {listData.responseData.map((data) => {
-            const { id, name, yogaSorts, phoneNum, commonAddress, imageUrl } =
-              data;
-            return (
-              <DataList
-                key={id}
-                title={name}
-                phoneNum={phoneNum}
-                imageUrl={imageUrl}
-                imageAlt={name}
-                hashTags={yogaSorts}
-                address={commonAddress}
-              />
-            );
-          })}
+          <DataList data={listData.responseData} />
         </DataListWrapper>
       </MainWrapper>
     </Container>
@@ -107,6 +93,10 @@ const Container = styled.div`
   background: white;
 `;
 
-const DataListWrapper = styled.div``;
+const DataListWrapper = styled.div`
+  ${ListContainer} {
+    margin-top: 2rem;
+  }
+`;
 
 export default AcademyListPage;

@@ -1,52 +1,64 @@
 import * as React from 'react';
-import styled from '@emotion/styled';
+import styled from '@emotion/styled/macro';
+import { IAcademySlice } from '../slices/AcademyListPageState';
 
 interface IDataList {
-  imageUrl: string;
-  imageAlt: string;
-  title: string;
-  address: string;
-  phoneNum: string;
-  hashTags: { [key: string]: any }[];
+  data: IAcademySlice['list']['responseData'];
 }
 
-function DataList({
-  imageUrl,
-  imageAlt,
-  title,
-  address,
-  phoneNum,
-  hashTags
-}: IDataList) {
+function DataList({ data }: IDataList) {
   return (
-    <ListContainer>
-      <Image src={imageUrl} alt={imageAlt} />
-      <TextBox>
-        <Title>{title}</Title>
-        <Address>{address}</Address>
-        <PhoneNum>{phoneNum}</PhoneNum>
-        <HashTagBox>
-          {hashTags.map((data: any) => {
-            return <HasTag>{data.name}</HasTag>;
-          })}
-        </HashTagBox>
-      </TextBox>
-    </ListContainer>
+    <>
+      {data.map((data) => {
+        const { id, imageUrl, name, phoneNum, commonAddress, yogaSorts } = data;
+        return (
+          <ListContainer key={id}>
+            <ImageBox>
+              <Image src={imageUrl} alt={name} />
+            </ImageBox>
+            <TextBox>
+              <Title>{name}</Title>
+              <Address>{commonAddress}</Address>
+              <PhoneNum>{phoneNum}</PhoneNum>
+              <HashTagBox>
+                {yogaSorts.map((data, index) => {
+                  return <HasTag> #{data.name}</HasTag>;
+                })}
+              </HashTagBox>
+            </TextBox>
+          </ListContainer>
+        );
+      })}
+    </>
   );
 }
 
 export default DataList;
 
-const ListContainer = styled.div`
+export const ListContainer = styled.div`
   display: flex;
-  padding: 3.2rem 0 0 1.2rem;
+  gap: 2rem;
+  padding: 1.6rem 0 1.6rem 1.2rem;
   width: 100%;
-  height: 18rem;
+  height: 20rem;
+  border: 1px solid #c2c2c2;
+  border-radius: 2rem;
 `;
 
-const Image = styled.img``;
+const ImageBox = styled.div`
+  margin: auto 0;
+  min-width: 20rem;
+`;
 
-const TextBox = styled.div``;
+const Image = styled.img`
+  width: 20rem;
+  height: 12rem;
+`;
+
+const TextBox = styled.div`
+  margin: auto 0;
+  width: 100%;
+`;
 
 const Title = styled.h1`
   font-size: 2.5rem;
@@ -54,6 +66,7 @@ const Title = styled.h1`
 `;
 
 const Address = styled.p`
+  margin-top: 1.5rem;
   font-size: 1.5rem;
   font-weight: 300;
 `;
@@ -63,7 +76,12 @@ const PhoneNum = styled.p`
   font-weight: 300;
 `;
 
-const HashTagBox = styled.div``;
+const HashTagBox = styled.div`
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  margin-top: 1.5rem;
+`;
 
 const HasTag = styled.p`
   font-size: 1.5rem;
