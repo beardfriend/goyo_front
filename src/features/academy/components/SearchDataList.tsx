@@ -1,21 +1,22 @@
-import { useState } from 'react';
 import styled from '@emotion/styled/macro';
 import { css } from '@emotion/react';
 import { BiSearchAlt2 } from 'react-icons/bi';
+import { IAcademySlice } from '../slices/AcademyListPageState';
+import React from 'react';
 
 interface ISearchDataList {
-  datas: { [key: string]: string | number }[];
+  datas: IAcademySlice['category']['responseData'];
   isShow: boolean;
+  onClick: (e: React.FormEvent<HTMLButtonElement>) => void;
 }
 
-function SearchDataList({ datas, isShow }: ISearchDataList) {
+function SearchDataList({ datas, isShow, onClick }: ISearchDataList) {
   return (
     <SearchDataListContainer isShow={isShow}>
       <ItemWrapper>
         {datas?.map((data) => {
-          console.log(data);
           return (
-            <ItemBox key={data.id}>
+            <ItemBox key={data.id} onClick={onClick}>
               <SearchIcon />
               <Text>{data.name}</Text>
             </ItemBox>
@@ -48,10 +49,11 @@ const ItemWrapper = styled.div`
   border-top: none;
 `;
 
-const ItemBox = styled.div`
+const ItemBox = styled.button`
   display: flex;
   align-items: center;
   padding: 1.2rem 0;
+  width: 100%;
   &:hover {
     background: #f4f4f4;
   }

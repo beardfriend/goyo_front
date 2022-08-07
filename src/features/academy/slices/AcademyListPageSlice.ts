@@ -16,30 +16,60 @@ export const GET_CATEGORY = createAsyncThunk(
   }
 );
 
+export const GET_LIST = createAsyncThunk(
+  `academy/GET_LIST`,
+  async (keyword: string, { rejectWithValue }) => {
+    try {
+      const res = await goyo.GETList(keyword);
+      return res.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 export const academySlice = createSlice({
   name: 'acadmey',
   initialState: academyinitialState,
   reducers: {
     setSearchKeyword(state, action) {
       state.category.query.keyword = action.payload;
+    },
+    setKeywordResponse(state, action) {
+      state.category.responseData = action.payload;
+    },
+    setSearchListKeyword(state, action) {
+      state.list.query.keyword = action.payload;
     }
   },
   extraReducers: {
+    //
     [GET_CATEGORY.pending.type](state) {
       state.category.status.isLoading = true;
     },
     [GET_CATEGORY.fulfilled.type](state, action) {
       state.category.status.isLoading = false;
-      if (action.payload.result !== null) {
-        state.category.responseData = action.payload.result;
-      }
+      state.category.responseData = action.payload.result;
     },
     [GET_CATEGORY.rejected.type](state) {
       state.category.status.isLoading = false;
+    },
+    //
+    [GET_LIST.pending.type](state) {
+      state.list.status.isLoading = true;
+    },
+    [GET_LIST.fulfilled.type](state, action) {
+      state.category.status.isLoading = false;
+      state.list.responseData = action.payload.result.list;
+    },
+    [GET_LIST.rejected.type](state) {
+      state.list.status.isLoading = false;
     }
   }
 });
 export const categoryState = (state: RootState) => state.academy.category;
-export const { setSearchKeyword } = academySlice.actions;
+export const listState = (state: RootState) => state.academy.list;
+export const { setSearchKeyword, setSearchListKeyword, setKeywordResponse } =
+  academySlice.actions;
 
 export default academySlice.reducer;

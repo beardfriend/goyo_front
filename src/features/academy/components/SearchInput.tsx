@@ -5,13 +5,20 @@ import { ReactComponent as Yoga } from '@Assets/input/yoga.svg';
 
 interface ISearchInput extends React.InputHTMLAttributes<HTMLInputElement> {
   isListShow: boolean;
+  value: string;
   onChange: (e: React.FormEvent<HTMLInputElement>) => void;
 }
 
-function SearchInput({ placeholder, isListShow, onChange }: ISearchInput) {
+function SearchInput({
+  placeholder,
+  isListShow,
+  onChange,
+  value
+}: ISearchInput) {
   return (
     <SearchInputWrapper>
       <Input
+        value={value}
         placeholder={placeholder}
         onChange={onChange}
         isListShow={isListShow}
