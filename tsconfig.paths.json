@@ -6,7 +6,8 @@
       "@Features/*" :["./features/*"],
       "@Libs/*" :["./libs/*"],
       "@Shared/*" :["./shared/*"],
-      "@Assets/*" :["./assets/*"]
+      "@Assets/*" :["./assets/*"],
+      "@Apps/*" :["./apps/*"]
     }
   }
 }

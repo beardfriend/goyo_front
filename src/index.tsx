@@ -1,6 +1,8 @@
 import { ColorModeScript } from '@chakra-ui/react';
+import { store } from '@Apps/store';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom/client';
+import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import { App } from './apps/App';
 
@@ -10,9 +12,11 @@ const root = ReactDOM.createRoot(container);
 
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <ColorModeScript />
-      <App />
-    </BrowserRouter>
+    <Provider store={store}>
+      <BrowserRouter>
+        <ColorModeScript />
+        <App />
+      </BrowserRouter>
+    </Provider>
   </React.StrictMode>
 );

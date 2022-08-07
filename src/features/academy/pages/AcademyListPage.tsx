@@ -4,29 +4,33 @@ import styled from '@emotion/styled/macro';
 import MobileHeader from '@Shared/layout/header/components/MobileHeader';
 import SearchDataList from '../components/SearchDataList';
 import SearchInput, { SearchInputWrapper } from '../components/SearchInput';
+import { useSelector } from 'react-redux';
+import {
+  categoryState,
+  GET_CATEGORY,
+  setSearchKeyword
+} from '../slices/AcademyListPageSlice';
+import { useAppDispatch } from '@Apps/store';
 
 function AcademyListPage() {
-  const [value, setValue] = useState('');
-  const [data, setData] = useState([]);
-  const [isListShow, setIsListShow] = useState(false);
-  const api = new GoyoApi();
-  async function GET() {
-    const res = await api.GETCategory(value);
-    console.log(res.data.result);
-    setData(res.data.result);
-  }
-
+  const dispatch = useAppDispatch();
+  const data = useSelector(categoryState);
   useEffect(() => {
-    GET();
-  }, [value]);
+    if (data.query.keyword.length === 0) {
+      return;
+    }
+    dispatch(GET_CATEGORY(data.query.keyword));
+  }, [data.query.keyword]);
+
+  const [isListShow, setIsListShow] = useState(false);
+
   function onChangeInput(e) {
     e.preventDefault();
     if (e.currentTarget.value.length > 0) {
       setIsListShow(true);
-      setValue(e.currentTarget.value);
+      dispatch(setSearchKeyword(e.currentTarget.value));
       return;
     }
-
     setIsListShow(false);
   }
   return (
@@ -39,7 +43,7 @@ function AcademyListPage() {
           isListShow={isListShow}
           onChange={onChangeInput}
         />
-        <SearchDataList isShow={isListShow} datas={data} />
+        <SearchDataList isShow={isListShow} datas={data.data} />
       </MainWrapper>
     </Container>
   );

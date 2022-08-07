@@ -4,7 +4,8 @@ module.exports = {
     alias: {
       '@Features': path.resolve(__dirname, 'src/features'),
       '@Shared': path.resolve(__dirname, 'src/shared'),
-      '@Assets': path.resolve(__dirname, 'src/assets')
+      '@Assets': path.resolve(__dirname, 'src/assets'),
+      '@Apps': path.resolve(__dirname, 'src/apps')
     }
   }
 };
