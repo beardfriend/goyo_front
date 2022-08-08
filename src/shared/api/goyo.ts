@@ -11,7 +11,9 @@ export default class GoyoAPI {
     return this.axios().get(`/yoga/category?keyword=${keyword}`);
   }
 
-  GETList(keyword: string) {
-    return this.axios().get(`/academy/list?yoga_sort=${keyword}`);
+  GETList(keyword: string, pageNum?: number) {
+    return this.axios().get(
+      `/academy/list?yoga_sort=${keyword}&page_no=${pageNum}`
+    );
   }
 }

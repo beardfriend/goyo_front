@@ -23,7 +23,7 @@ function DataList({ data }: IDataList) {
               <PhoneNum>{phoneNum}</PhoneNum>
               <HashTagBox>
                 {yogaSorts.map((data, index) => {
-                  return <HasTag> #{data.name}</HasTag>;
+                  return <HasTag key={index}> #{data.name}</HasTag>;
                 })}
               </HashTagBox>
             </TextBox>

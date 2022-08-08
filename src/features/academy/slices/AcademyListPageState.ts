@@ -30,7 +30,14 @@ export interface IAcademySlice {
         name: string;
       }[];
     }[];
+    pagination: {
+      page: number;
+      pageCount: number;
+      pageSize: number;
+      rowCount: number;
+    };
     status: {
+      status: 'idle' | 'loading' | 'success' | 'fail';
       isLoading: boolean;
     };
   };
@@ -56,7 +63,14 @@ export const academyinitialState: IAcademySlice = {
       keyword: ''
     },
     responseData: [],
+    pagination: {
+      page: 0,
+      pageCount: 0,
+      pageSize: 0,
+      rowCount: 0
+    },
     status: {
+      status: 'idle',
       isLoading: false
     }
   }

@@ -4,11 +4,13 @@ import { BiSearchAlt2 } from 'react-icons/bi';
 import { ReactComponent as Yoga } from '@Assets/input/yoga.svg';
 import mq from '@Libs/theme/mediaQuery';
 
-interface ISearchInput extends React.InputHTMLAttributes<HTMLInputElement> {
+interface ISearchInput {
+  placeholder: React.HTMLInputTypeAttribute;
   isListShow: boolean;
   value: string;
   onChange: (e: React.FormEvent<HTMLInputElement>) => void;
   onFocus?: (e: React.FormEvent<HTMLInputElement>) => void;
+  onClick: (e: React.FormEvent<HTMLButtonElement>) => void;
 }
 
 function SearchInput({
@@ -16,7 +18,8 @@ function SearchInput({
   isListShow,
   onChange,
   onFocus,
-  value
+  value,
+  onClick
 }: ISearchInput) {
   return (
     <SearchInputWrapper>
@@ -30,7 +33,7 @@ function SearchInput({
       <LogoIconWrapper>
         <LogoIcon />
       </LogoIconWrapper>
-      <SearchButton>
+      <SearchButton onClick={onClick}>
         <SearchIcon />
       </SearchButton>
     </SearchInputWrapper>

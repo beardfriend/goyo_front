@@ -1,6 +1,7 @@
-import { ChakraProvider } from '@chakra-ui/react';
+import { ChakraProvider, Switch } from '@chakra-ui/react';
 import styled from '@emotion/styled';
-import AcademyListPage from '@Features/academy/pages/AcademySearchPage';
+import AcademyListPage from '@Features/academy/pages/AcademyListPage';
+import AcademySearchPage from '@Features/academy/pages/AcademySearchPage';
 import { setIsMobile } from '@Features/common/slices/CommonSlice';
 import { useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
@@ -30,7 +31,8 @@ export const App = () => {
     <Container>
       <ChakraProvider theme={theme}>
         <Routes>
-          <Route path='/' element={<AcademyListPage />} />
+          <Route path='/' element={<AcademySearchPage />} />
+          <Route path='/:keyword' element={<AcademyListPage />} />
         </Routes>
       </ChakraProvider>
     </Container>

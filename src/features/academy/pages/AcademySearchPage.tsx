@@ -1,27 +1,24 @@
-import React, { useEffect, useState } from 'react';
+import { useAppDispatch } from '@Apps/store';
 import styled from '@emotion/styled/macro';
+import { commonState } from '@Features/common/slices/CommonSlice';
+import mq from '@Libs/theme/mediaQuery';
 import MobileHeader from '@Shared/layout/header/components/MobileHeader';
-import SearchDataList from '../components/SearchDataList';
-import SearchInput, { SearchInputWrapper } from '../components/SearchInput';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import SearchDataList from '../components/SearchDataList';
+import SearchFocusInput from '../components/SearchFocusInput';
+import SearchInput, { SearchInputWrapper } from '../components/SearchInput';
 import {
   categoryState,
-  listState,
   GET_CATEGORY,
-  GET_LIST,
-  setKeywordResponse,
   setSearchKeyword
 } from '../slices/AcademyListPageSlice';
-import { useAppDispatch } from '@Apps/store';
-import DataList, { ListContainer } from '../components/DataList';
-import mq from '@Libs/theme/mediaQuery';
-import { commonState } from '@Features/common/slices/CommonSlice';
-import SearchFocusInput from '../components/SearchFocusInput';
 
-function AcademyListPage() {
+function AcademySearchPage() {
   const dispatch = useAppDispatch();
   const data = useSelector(categoryState);
-  const listData = useSelector(listState);
+  const navigate = useNavigate();
   const commonData = useSelector(commonState);
   const [isFocus, setIsFocus] = useState(false);
 
@@ -36,7 +33,6 @@ function AcademyListPage() {
 
   function onChangeInput(e: React.FormEvent<HTMLInputElement>) {
     e.preventDefault();
-    console.log(e);
     dispatch(setSearchKeyword(e.currentTarget.value));
     if (e.currentTarget.value.length > 0) {
       setIsListShow(true);
@@ -47,13 +43,16 @@ function AcademyListPage() {
 
   function handleClick(e: React.FormEvent<HTMLButtonElement>) {
     e.preventDefault();
-    const text = e.currentTarget.textContent;
-    if (text !== null) {
-      dispatch(GET_LIST(text));
-    }
-    dispatch(setKeywordResponse([]));
-    dispatch(setSearchKeyword(''));
 
+    const text = e.currentTarget.textContent;
+
+    if (data.query.keyword) {
+      navigate(`/${data.query.keyword}`);
+    }
+    if (text) {
+      navigate(`/${text}`);
+    }
+    dispatch(setSearchKeyword(''));
     setIsListShow(false);
   }
 
@@ -63,10 +62,20 @@ function AcademyListPage() {
     }
   }
   function onClickBackSpace(e: React.FormEvent<HTMLInputElement>) {
-    e.currentTarget.focus();
     setIsFocus(false);
     setIsListShow(false);
     dispatch(setSearchKeyword(''));
+  }
+
+  function searchClick(e: React.FormEvent<HTMLButtonElement>) {
+    const text = e.currentTarget.textContent;
+
+    if (data.query.keyword) {
+      navigate(`/${data.query.keyword}`);
+    }
+    if (text) {
+      navigate(`/${text}`);
+    }
   }
 
   if (commonData.isMobile && isFocus) {
@@ -76,6 +85,7 @@ function AcademyListPage() {
           value={data.query.keyword}
           placeholder='검색어를 입력해주세요'
           onClick={onClickBackSpace}
+          searchClick={searchClick}
           isListShow={isListShow}
           onChange={onChangeInput}
         />
@@ -94,6 +104,7 @@ function AcademyListPage() {
       <MainWrapper>
         <Banner>하고 싶은 요가를 검색해보세요.</Banner>
         <SearchInput
+          onClick={handleClick}
           onFocus={onChangeFocus}
           value={data.query.keyword}
           placeholder='검색어를 입력해주세요'
@@ -105,10 +116,6 @@ function AcademyListPage() {
           datas={data.responseData}
           onClick={handleClick}
         />
-
-        <DataListWrapper>
-          <DataList data={listData.responseData} />
-        </DataListWrapper>
       </MainWrapper>
     </Container>
   );
@@ -139,10 +146,4 @@ const Container = styled.div`
   background: white;
 `;
 
-const DataListWrapper = styled.div`
-  ${ListContainer} {
-    margin-top: 2rem;
-  }
-`;
-
-export default AcademyListPage;
+export default AcademySearchPage;

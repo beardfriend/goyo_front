@@ -9,6 +9,7 @@ interface ISearchInput extends React.InputHTMLAttributes<HTMLInputElement> {
   value: string;
   onChange: (e: React.FormEvent<HTMLInputElement>) => void;
   onClick: (e) => void;
+  searchClick: (e: React.FormEvent<HTMLButtonElement>) => void;
 }
 
 function SearchFocusInput({
@@ -16,6 +17,7 @@ function SearchFocusInput({
   isListShow,
   onChange,
   onClick,
+  searchClick,
   value
 }: ISearchInput) {
   return (
@@ -30,7 +32,7 @@ function SearchFocusInput({
       <BackIconWrapper onClick={onClick}>
         <BackIcon />
       </BackIconWrapper>
-      <SearchButton>
+      <SearchButton onClick={searchClick}>
         <SearchIcon />
       </SearchButton>
     </SearchInputWrapper>
@@ -53,14 +55,14 @@ const SearchButton = styled.button`
   height: 5rem;
 `;
 
-const BackIconWrapper = styled.button`
+export const BackIconWrapper = styled.button`
   position: absolute;
   top: 50%;
   left: 2.3rem;
   transform: translate(0, -50%);
 `;
 
-const BackIcon = styled(MdOutlineKeyboardBackspace)`
+export const BackIcon = styled(MdOutlineKeyboardBackspace)`
   width: 2.5rem;
   height: 2rem;
 `;
