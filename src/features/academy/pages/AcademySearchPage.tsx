@@ -12,7 +12,8 @@ import SearchInput, { SearchInputWrapper } from '../components/SearchInput';
 import {
   categoryState,
   GET_CATEGORY,
-  setSearchKeyword
+  setSearchKeyword,
+  setSearchListResponse
 } from '../slices/AcademyListPageSlice';
 
 function AcademySearchPage() {
@@ -23,6 +24,7 @@ function AcademySearchPage() {
   const [isFocus, setIsFocus] = useState(false);
 
   useEffect(() => {
+    dispatch(setSearchListResponse([]));
     if (data.query.keyword.length === 0) {
       return;
     }
