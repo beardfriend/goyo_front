@@ -1,10 +1,12 @@
 import AcademyReducer from '@Features/academy/slices/AcademyListPageSlice';
+import CommonReducer from '@Features/common/slices/CommonSlice';
 import { configureStore } from '@reduxjs/toolkit';
 import { useDispatch } from 'react-redux';
 
 export const store = configureStore({
   reducer: {
-    academy: AcademyReducer
+    academy: AcademyReducer,
+    common: CommonReducer
   }
 });
 

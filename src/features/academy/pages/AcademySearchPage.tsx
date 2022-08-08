@@ -15,11 +15,16 @@ import {
 import { useAppDispatch } from '@Apps/store';
 import DataList, { ListContainer } from '../components/DataList';
 import mq from '@Libs/theme/mediaQuery';
+import { commonState } from '@Features/common/slices/CommonSlice';
+import SearchFocusInput from '../components/SearchFocusInput';
 
 function AcademyListPage() {
   const dispatch = useAppDispatch();
   const data = useSelector(categoryState);
   const listData = useSelector(listState);
+  const commonData = useSelector(commonState);
+  const [isFocus, setIsFocus] = useState(false);
+
   useEffect(() => {
     if (data.query.keyword.length === 0) {
       return;
@@ -29,8 +34,9 @@ function AcademyListPage() {
 
   const [isListShow, setIsListShow] = useState(false);
 
-  function onChangeInput(e) {
+  function onChangeInput(e: React.FormEvent<HTMLInputElement>) {
     e.preventDefault();
+    console.log(e);
     dispatch(setSearchKeyword(e.currentTarget.value));
     if (e.currentTarget.value.length > 0) {
       setIsListShow(true);
@@ -48,15 +54,47 @@ function AcademyListPage() {
     dispatch(setKeywordResponse([]));
     dispatch(setSearchKeyword(''));
 
-    console.log(listData.responseData);
     setIsListShow(false);
   }
+
+  function onChangeFocus(e: React.FormEvent<HTMLInputElement>) {
+    if (commonData.isMobile) {
+      setIsFocus(true);
+    }
+  }
+  function onClickBackSpace(e: React.FormEvent<HTMLInputElement>) {
+    e.currentTarget.focus();
+    setIsFocus(false);
+    setIsListShow(false);
+    dispatch(setSearchKeyword(''));
+  }
+
+  if (commonData.isMobile && isFocus) {
+    return (
+      <Container>
+        <SearchFocusInput
+          value={data.query.keyword}
+          placeholder='검색어를 입력해주세요'
+          onClick={onClickBackSpace}
+          isListShow={isListShow}
+          onChange={onChangeInput}
+        />
+        <SearchDataList
+          isShow={isListShow}
+          datas={data.responseData}
+          onClick={handleClick}
+        />
+      </Container>
+    );
+  }
+
   return (
     <Container>
       <MobileHeader />
       <MainWrapper>
         <Banner>하고 싶은 요가를 검색해보세요.</Banner>
         <SearchInput
+          onFocus={onChangeFocus}
           value={data.query.keyword}
           placeholder='검색어를 입력해주세요'
           isListShow={isListShow}

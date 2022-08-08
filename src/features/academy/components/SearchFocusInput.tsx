@@ -1,35 +1,35 @@
 import * as React from 'react';
 import styled from '@emotion/styled/macro';
 import { BiSearchAlt2 } from 'react-icons/bi';
-import { ReactComponent as Yoga } from '@Assets/input/yoga.svg';
+import { MdOutlineKeyboardBackspace } from 'react-icons/md';
 import mq from '@Libs/theme/mediaQuery';
 
 interface ISearchInput extends React.InputHTMLAttributes<HTMLInputElement> {
   isListShow: boolean;
   value: string;
   onChange: (e: React.FormEvent<HTMLInputElement>) => void;
-  onFocus?: (e: React.FormEvent<HTMLInputElement>) => void;
+  onClick: (e) => void;
 }
 
-function SearchInput({
+function SearchFocusInput({
   placeholder,
   isListShow,
   onChange,
-  onFocus,
+  onClick,
   value
 }: ISearchInput) {
   return (
     <SearchInputWrapper>
       <Input
+        autoFocus={true}
         value={value}
         placeholder={placeholder}
         onChange={onChange}
         isListShow={isListShow}
-        onFocus={onFocus}
       />
-      <LogoIconWrapper>
-        <LogoIcon />
-      </LogoIconWrapper>
+      <BackIconWrapper onClick={onClick}>
+        <BackIcon />
+      </BackIconWrapper>
       <SearchButton>
         <SearchIcon />
       </SearchButton>
@@ -37,26 +37,11 @@ function SearchInput({
   );
 }
 
-export default SearchInput;
+export default SearchFocusInput;
 
 export const SearchInputWrapper = styled.div`
   position: relative;
-`;
-
-const LogoIconWrapper = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 2.3rem;
-  transform: translate(0, -50%);
-`;
-
-const LogoIcon = styled(Yoga)`
-  ${mq[0]} {
-    width: 2.5rem;
-    height: 2rem;
-  }
-  width: 3rem;
-  height: 4rem;
+  margin-top: 0.1rem;
 `;
 
 const SearchButton = styled.button`
@@ -66,6 +51,18 @@ const SearchButton = styled.button`
   transform: translate(0, -50%);
   width: 3rem;
   height: 5rem;
+`;
+
+const BackIconWrapper = styled.button`
+  position: absolute;
+  top: 50%;
+  left: 2.3rem;
+  transform: translate(0, -50%);
+`;
+
+const BackIcon = styled(MdOutlineKeyboardBackspace)`
+  width: 2.5rem;
+  height: 2rem;
 `;
 
 const SearchIcon = styled(BiSearchAlt2)`
@@ -78,20 +75,16 @@ const SearchIcon = styled(BiSearchAlt2)`
 `;
 
 const Input = styled.input<{ isListShow }>`
-  ${mq[0]} {
-    height: 5rem;
-    font-size: 1.5rem;
-    padding-left: 6rem;
-  }
+  height: 5rem;
+  font-size: 1.5rem;
+  padding-left: 6rem;
+
   outline: none;
-  padding-left: 8rem;
   width: 100%;
-  height: 6rem;
   border: 1px solid #003d8d;
-  border-radius: ${(props) => (props.isListShow ? '2rem 2rem 0 0' : '2rem')};
 
   border-bottom: ${({ isListShow }) => isListShow && 'none'};
-  font-size: 2.5rem;
+
   &::placeholder {
     color: #b9b9b9;
   }
