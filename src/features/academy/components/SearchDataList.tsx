@@ -3,6 +3,7 @@ import { css } from '@emotion/react';
 import { BiSearchAlt2 } from 'react-icons/bi';
 import { IAcademySlice } from '../slices/AcademyListPageState';
 import React from 'react';
+import mq from '@Libs/theme/mediaQuery';
 
 interface ISearchDataList {
   datas: IAcademySlice['category']['responseData'];
@@ -60,12 +61,20 @@ const ItemBox = styled.button`
 `;
 
 const SearchIcon = styled(BiSearchAlt2)`
+  ${mq[0]} {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
   margin-left: 2.4rem;
   width: 3rem;
   height: 3rem;
 `;
 
 const Text = styled.p`
+  ${mq[0]} {
+    font-size: 1.5rem;
+    margin-left: 1.5rem;
+  }
   margin-left: 2.5rem;
   font-size: 2.5rem;
 `;

@@ -1,5 +1,6 @@
 import * as React from 'react';
 import styled from '@emotion/styled';
+import mq from '@Libs/theme/mediaQuery';
 
 function MobileHeader() {
   return (
@@ -18,6 +19,9 @@ const Header = styled.header`
 `;
 
 const Logo = styled.a`
+  ${mq[0]} {
+    left: 2rem;
+  }
   position: relative;
   left: 5.5rem;
   font-size: 2.5rem;

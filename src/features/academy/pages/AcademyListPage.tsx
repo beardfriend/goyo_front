@@ -14,6 +14,7 @@ import {
 } from '../slices/AcademyListPageSlice';
 import { useAppDispatch } from '@Apps/store';
 import DataList, { ListContainer } from '../components/DataList';
+import mq from '@Libs/theme/mediaQuery';
 
 function AcademyListPage() {
   const dispatch = useAppDispatch();
@@ -81,12 +82,19 @@ const MainWrapper = styled.div`
   ${SearchInputWrapper} {
     margin-top: 7rem;
   }
+  ${mq[0]} {
+    padding: 0 1rem;
+  }
 `;
 
 const Banner = styled.div`
   font-weight: 700;
   font-size: 2.5rem;
   text-align: center;
+  ${mq[0]} {
+    font-size: 2rem;
+    padding: 0 1rem;
+  }
 `;
 
 const Container = styled.div`

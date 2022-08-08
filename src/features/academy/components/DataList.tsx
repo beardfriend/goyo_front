@@ -1,6 +1,7 @@
 import * as React from 'react';
 import styled from '@emotion/styled/macro';
 import { IAcademySlice } from '../slices/AcademyListPageState';
+import mq from '@Libs/theme/mediaQuery';
 
 interface IDataList {
   data: IAcademySlice['list']['responseData'];
@@ -48,6 +49,9 @@ export const ListContainer = styled.div`
 const ImageBox = styled.div`
   margin: auto 0;
   min-width: 20rem;
+  ${mq[0]} {
+    min-width: 10rem;
+  }
 `;
 
 const Image = styled.img`
@@ -61,17 +65,26 @@ const TextBox = styled.div`
 `;
 
 const Title = styled.h1`
+  ${mq[0]} {
+    font-size: 2rem;
+  }
   font-size: 2.5rem;
   font-weight: 700;
 `;
 
 const Address = styled.p`
+  ${mq[0]} {
+    font-size: 1.2rem;
+  }
   margin-top: 1.5rem;
   font-size: 1.5rem;
   font-weight: 300;
 `;
 
 const PhoneNum = styled.p`
+  ${mq[0]} {
+    font-size: 1.2rem;
+  }
   font-size: 1.5rem;
   font-weight: 300;
 `;
@@ -84,6 +97,9 @@ const HashTagBox = styled.div`
 `;
 
 const HasTag = styled.p`
+  ${mq[0]} {
+    font-size: 1.2rem;
+  }
   font-size: 1.5rem;
   font-weight: 700;
 `;

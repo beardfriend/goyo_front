@@ -5,7 +5,8 @@ module.exports = {
       '@Features': path.resolve(__dirname, 'src/features'),
       '@Shared': path.resolve(__dirname, 'src/shared'),
       '@Assets': path.resolve(__dirname, 'src/assets'),
-      '@Apps': path.resolve(__dirname, 'src/apps')
+      '@Apps': path.resolve(__dirname, 'src/apps'),
+      '@Libs': path.resolve(__dirname, 'src/libs')
     }
   }
 };

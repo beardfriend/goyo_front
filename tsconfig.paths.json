@@ -7,7 +7,7 @@
       "@Libs/*" :["./libs/*"],
       "@Shared/*" :["./shared/*"],
       "@Assets/*" :["./assets/*"],
-      "@Apps/*" :["./apps/*"]
+      "@Apps/*" :["./apps/*"],
     }
   }
 }

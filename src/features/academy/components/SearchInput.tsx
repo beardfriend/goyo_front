@@ -2,6 +2,7 @@ import * as React from 'react';
 import styled from '@emotion/styled/macro';
 import { BiSearchAlt2 } from 'react-icons/bi';
 import { ReactComponent as Yoga } from '@Assets/input/yoga.svg';
+import mq from '@Libs/theme/mediaQuery';
 
 interface ISearchInput extends React.InputHTMLAttributes<HTMLInputElement> {
   isListShow: boolean;
@@ -47,6 +48,10 @@ const LogoIconWrapper = styled.div`
 `;
 
 const LogoIcon = styled(Yoga)`
+  ${mq[0]} {
+    width: 2.5rem;
+    height: 2rem;
+  }
   width: 3rem;
   height: 4rem;
 `;
@@ -61,11 +66,20 @@ const SearchButton = styled.button`
 `;
 
 const SearchIcon = styled(BiSearchAlt2)`
+  ${mq[0]} {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
   width: 3rem;
   height: 3rem;
 `;
 
 const Input = styled.input<{ isListShow }>`
+  ${mq[0]} {
+    height: 5rem;
+    font-size: 1.5rem;
+    padding-left: 6rem;
+  }
   outline: none;
   padding-left: 8rem;
   width: 100%;

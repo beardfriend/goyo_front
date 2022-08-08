@@ -3,7 +3,7 @@ import axios from 'axios';
 export default class GoyoAPI {
   axios() {
     return axios.create({
-      baseURL: 'http://localhost:8000'
+      baseURL: 'http://localhost:8000/api'
     });
   }
 
