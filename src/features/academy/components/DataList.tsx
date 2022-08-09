@@ -11,11 +11,14 @@ function DataList({ data }: IDataList) {
   return (
     <>
       {data.map((data) => {
-        const { id, imageUrl, name, phoneNum, commonAddress, yogaSorts } = data;
+        const { id, thumbUrl, name, phoneNum, commonAddress, yogaSorts } = data;
+        let x =
+          'https://thumbs.dreamstime.com/b/no-image-available-icon-flat-vector-no-image-available-icon-flat-vector-illustration-132482930.jpg';
+
         return (
           <ListContainer key={id}>
             <ImageBox>
-              <Image src={imageUrl} alt={name} />
+              <Image src={thumbUrl ? thumbUrl : x} alt={name} />
             </ImageBox>
             <TextBox>
               <Title>{name}</Title>

@@ -23,7 +23,7 @@ export interface IAcademySlice {
       bookingUrl: string;
       phoneNum: string;
       businessHours: string;
-      imageUrl: string;
+      thumbUrl: string;
       x: string;
       y: string;
       yogaSorts: {
