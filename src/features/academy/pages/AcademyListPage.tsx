@@ -39,6 +39,7 @@ function AcademyListPage() {
     navigate('/');
     dispatch(setSearchListResponse([]));
     dispatch(setSearchListKeyword(''));
+    return;
   }
   function More() {
     setCount(count + 1);

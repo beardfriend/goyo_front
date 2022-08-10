@@ -44,16 +44,18 @@ function AcademySearchPage() {
   }
 
   function handleClick(e: React.FormEvent<HTMLButtonElement>) {
-    e.preventDefault();
-
-    const text = e.currentTarget.textContent;
-
     if (data.query.keyword) {
       navigate(`/${data.query.keyword}`);
     }
-    if (text) {
-      navigate(`/${text}`);
-    }
+
+    dispatch(setSearchKeyword(''));
+    setIsListShow(false);
+  }
+
+  function RecommendKeyWordClick(e: React.FormEvent<HTMLButtonElement>) {
+    e.preventDefault();
+    const text = e.currentTarget.textContent;
+    navigate(`/${text}`);
     dispatch(setSearchKeyword(''));
     setIsListShow(false);
   }
@@ -94,7 +96,7 @@ function AcademySearchPage() {
         <SearchDataList
           isShow={isListShow}
           datas={data.responseData}
-          onClick={handleClick}
+          onClick={RecommendKeyWordClick}
         />
       </Container>
     );
@@ -116,7 +118,7 @@ function AcademySearchPage() {
         <SearchDataList
           isShow={isListShow}
           datas={data.responseData}
-          onClick={handleClick}
+          onClick={RecommendKeyWordClick}
         />
       </MainWrapper>
     </Container>
