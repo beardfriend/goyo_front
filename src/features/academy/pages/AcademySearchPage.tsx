@@ -80,6 +80,7 @@ function AcademySearchPage() {
     if (text) {
       navigate(`/${text}`);
     }
+    dispatch(setSearchKeyword(''));
   }
 
   if (commonData.isMobile && isFocus) {
