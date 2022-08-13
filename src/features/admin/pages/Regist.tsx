@@ -3,11 +3,12 @@ import {
   Button,
   Flex,
   Heading,
+  Input,
   Radio,
   RadioGroup,
   Select,
   Stack,
-  Switch
+  Tag
 } from '@chakra-ui/react';
 import styled from '@emotion/styled/macro';
 import { setFontsize, setFullMode } from '@Features/common/slices/CommonSlice';
@@ -23,6 +24,21 @@ function Regist() {
 
   const dispatch = useDispatch();
 
+  const recommand = [
+    {
+      id: 1,
+      name: '아쉬탕가'
+    },
+    {
+      id: 2,
+      name: '하타'
+    },
+    {
+      id: 3,
+      name: '빈야사'
+    }
+  ];
+  const [detail, setDetail] = useState<any>({});
   const [noaddedList, setList] = useState<any>([]);
   const [total, setTotal] = useState(0);
   const [param, setParams] = useState({
@@ -65,6 +81,11 @@ function Regist() {
     setAdministrations([...res.data.result.list]);
   }
 
+  async function getDetail(id) {
+    const res = await goyo.GetDetail(id);
+    setDetail(res.data.result);
+  }
+
   function ChangeRegist(e) {
     if (e === '1') {
       setParams({ ...param, isRegist: true, pageNum: 1 });
@@ -105,7 +126,7 @@ function Regist() {
   }
 
   function ClickYogaName(e) {
-    // e.target.value
+    getDetail(e.target.value);
   }
 
   useEffect(() => {
@@ -167,6 +188,7 @@ function Regist() {
                   fontSize='1rem'
                   w='100%'
                   marginTop='1rem'
+                  value={data.id}
                   onClick={ClickYogaName}
                 >
                   {data.name}
@@ -181,7 +203,33 @@ function Regist() {
           </Button>
         </Flex>
       </NoAddedList>
-      <AddZoneContainer>hello</AddZoneContainer>
+      <AddZoneContainer>
+        <div>
+          <Flex marginTop='1rem' padding='0 1rem'>
+            <Input placeholder='Basic usage' />
+            <Button w='40%'>등럭</Button>
+          </Flex>
+          <Flex marginTop='1rem' padding='0 1rem'>
+            {recommand.map((data: any) => {
+              return (
+                <Tag mr='1rem' key={data.id}>
+                  {data.name}
+                </Tag>
+              );
+            })}
+          </Flex>
+
+          <Heading>{detail?.name}</Heading>
+          <Heading>등록된 태그</Heading>
+          {detail?.yogaSorts?.length === 0 ? (
+            <Tag>태그없음</Tag>
+          ) : (
+            detail?.yogaSorts?.map((data: any) => {
+              return <>{data.name}</>;
+            })
+          )}
+        </div>
+      </AddZoneContainer>
 
       <IframeContainer>
         <iframe src='https://m.place.naver.com/place/1264884214/home?entry=pll' />

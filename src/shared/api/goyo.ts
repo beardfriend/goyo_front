@@ -43,6 +43,10 @@ export default class GoyoAPI {
     });
   }
 
+  GetDetail(naver_id) {
+    return this.axios().get(`/admin/academy/${naver_id}`);
+  }
+
   GetAdminiStrations() {
     return this.axios().get(`/admin/administrations`);
   }
