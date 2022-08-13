@@ -1,26 +1,35 @@
-import { ChakraProvider, Switch } from '@chakra-ui/react';
+import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 import styled from '@emotion/styled';
 import AcademyListPage from '@Features/academy/pages/AcademyListPage';
 import AcademySearchPage from '@Features/academy/pages/AcademySearchPage';
-import { setIsMobile } from '@Features/common/slices/CommonSlice';
+import AdminLogin from '@Features/admin/pages/AdminLogin';
+import Regist from '@Features/admin/pages/Regist';
+import NotFound from '@Features/common/pages/NotFound';
+import { commonState, setIsMobile } from '@Features/common/slices/CommonSlice';
 import { useEffect } from 'react';
+import { CookiesProvider } from 'react-cookie';
+import { useSelector } from 'react-redux';
 import { Routes, Route } from 'react-router-dom';
 import { useAppDispatch } from './store';
 
-const theme = {
-  styles: {
-    global: {
-      'html, body': {
-        fontFamily: 'Noto Sans KR',
-        fontSize: '10px',
-        boxSizing: 'border-box',
-        background: '#E5E5E5'
+export const App = () => {
+  const data = useSelector(commonState);
+  const fullMode = data.fullMode;
+  const theme = extendTheme({
+    styles: {
+      global: {
+        body: {
+          background: '#E5E5E5'
+        },
+        html: {
+          font: 'Noto Sans KR',
+          fontSize: data.fontSize,
+          boxSizing: 'border-box'
+        }
       }
     }
-  }
-};
+  });
 
-export const App = () => {
   const dispatch = useAppDispatch();
   useEffect(() => {
     if (window.innerWidth < 500) {
@@ -28,19 +37,26 @@ export const App = () => {
     }
   }, []);
   return (
-    <Container>
-      <ChakraProvider theme={theme}>
-        <Routes>
-          <Route path='/' element={<AcademySearchPage />} />
-          <Route path='/:keyword' element={<AcademyListPage />} />
-        </Routes>
-      </ChakraProvider>
-    </Container>
+    <ChakraProvider theme={theme}>
+      <CookiesProvider>
+        <Container fullMode={fullMode}>
+          <Routes>
+            <Route path='/admin/login' element={<AdminLogin />} />
+            <Route path='/admin' element={<Regist />} />
+            <Route path='/' element={<AcademySearchPage />} />
+            <Route path='/:keyword' element={<AcademyListPage />} />
+            <Route path='*' element={<NotFound />}></Route>
+          </Routes>
+        </Container>
+      </CookiesProvider>
+    </ChakraProvider>
   );
 };
 
-const Container = styled.div`
-  max-width: 768px;
+const Container = styled.div<{ fullMode }>`
+  font-family: 'Noto Sans KR';
+  font-size: 10px;
+  max-width: ${({ fullMode }) => (fullMode ? '100%' : '768px')};
   min-height: 100vh;
   margin: 0 auto;
   background: #ffffff;
