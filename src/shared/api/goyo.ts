@@ -21,24 +21,16 @@ export default class GoyoAPI {
   }
 
   // ADMIN
-  GetAdminAcademies({
-    pageNum,
-    key,
-    isRegist,
-    siGunGu,
-    ContainMeditation,
-    BeforeTenMin
-  }) {
+  GetAdminAcademies({ pageNum, key, status, siGunGu, ContainMeditation }) {
     return this.axios().get(`/admin/academies`, {
       headers: {
         'X-API-Key': key || ''
       },
       params: {
-        is_regist: isRegist,
+        status: status,
         page_no: pageNum,
         si_gun_gu: siGunGu,
-        contain_meditation: ContainMeditation,
-        before_ten_min: BeforeTenMin
+        contain_meditation: ContainMeditation
       }
     });
   }
@@ -49,5 +41,13 @@ export default class GoyoAPI {
 
   GetAdminiStrations() {
     return this.axios().get(`/admin/administrations`);
+  }
+
+  PostYogaSorts(data, key) {
+    return this.axios().post(`/admin/yoga/sorts`, data, {
+      headers: {
+        'X-API-Key': key || ''
+      }
+    });
   }
 }

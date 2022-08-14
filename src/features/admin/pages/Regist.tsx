@@ -8,7 +8,8 @@ import {
   RadioGroup,
   Select,
   Stack,
-  Tag
+  Tag,
+  useToast
 } from '@chakra-ui/react';
 import styled from '@emotion/styled/macro';
 import { setFontsize, setFullMode } from '@Features/common/slices/CommonSlice';
@@ -19,6 +20,7 @@ import { useDispatch } from 'react-redux';
 
 function Regist() {
   const goyo = new GoyoAPI();
+  const toast = useToast();
   const firstRenderRef = useRef(true);
   const [cookies] = useCookies(['key']);
 
@@ -41,16 +43,17 @@ function Regist() {
   const [detail, setDetail] = useState<any>({});
   const [noaddedList, setList] = useState<any>([]);
   const [total, setTotal] = useState(0);
+  const [nowId, setNowId] = useState(0);
+  const [inputValue, setInputValue] = useState('');
   const [param, setParams] = useState({
     pageNum: 1,
     key: '',
-    isRegist: false,
+    status: '',
     siGunGu: '',
-    ContainMeditation: false,
-    BeforeTenMin: true
+    ContainMeditation: false
   });
   const [addLIst, setAdministrations] = useState<any>([]);
-
+  const [iframeUrl, setIframeUrl] = useState('');
   async function noAddedListFetch() {
     param.key = cookies.key as string;
 
@@ -85,13 +88,42 @@ function Regist() {
     const res = await goyo.GetDetail(id);
     setDetail(res.data.result);
   }
+  async function PostYogaSorts(data, key) {
+    try {
+      const res = await goyo.PostYogaSorts(data, key);
+
+      if (res.status === 201) {
+        toast({
+          description: '성공적으로 등록됐습니다.',
+          status: 'success'
+        });
+        getDetail(detail.id);
+        setInputValue('');
+      }
+    } catch (err) {
+      if (detail.id === undefined) {
+        toast({
+          description: '왼쪽에 학원을 클릭하세요',
+          status: 'error'
+        });
+        return;
+      }
+      toast({
+        description: '등록 실패',
+        status: 'error'
+      });
+    }
+  }
 
   function ChangeRegist(e) {
     if (e === '1') {
-      setParams({ ...param, isRegist: true, pageNum: 1 });
+      setParams({ ...param, status: '', pageNum: 1 });
     }
     if (e === '2') {
-      setParams({ ...param, isRegist: false, pageNum: 1 });
+      setParams({ ...param, status: 'NonRegist', pageNum: 1 });
+    }
+    if (e === '3') {
+      setParams({ ...param, status: 'Regist', pageNum: 1 });
     }
     Reset();
   }
@@ -106,16 +138,6 @@ function Regist() {
     Reset();
   }
 
-  function ChangeBeforeTenMin(e) {
-    if (e === '1') {
-      setParams({ ...param, BeforeTenMin: true, pageNum: 1 });
-    }
-    if (e === '2') {
-      setParams({ ...param, BeforeTenMin: false, pageNum: 1 });
-    }
-    Reset();
-  }
-
   function changeSigunGu(e) {
     setParams({ ...param, siGunGu: e.target.value, pageNum: 1 });
     Reset();
@@ -125,8 +147,28 @@ function Regist() {
     setParams({ ...param, pageNum: param.pageNum + 1 });
   }
 
-  function ClickYogaName(e) {
-    getDetail(e.target.value);
+  function ClickYogaName(e, naver_id) {
+    getDetail(e.currentTarget.value);
+    console.log(e.target.value);
+    setNowId(e.target.value);
+    setIframeUrl(`https://m.place.naver.com/place/${naver_id}/home`);
+  }
+
+  function Submit() {
+    if (inputValue.length <= 1) {
+      toast({
+        description: '글자수 키우세요.',
+        status: 'warning'
+      });
+      return;
+    }
+    let value = [] as {}[];
+    const splited = inputValue.split(',');
+    splited.forEach((data: any) => {
+      value = [...value, { naverPlaceId: detail.id, name: data }];
+    });
+
+    PostYogaSorts({ value: value }, param.key);
   }
 
   useEffect(() => {
@@ -139,6 +181,7 @@ function Regist() {
       return;
     }
     noAddedListFetch();
+    console.log(detail);
   }, [param]);
 
   return (
@@ -153,10 +196,20 @@ function Regist() {
             );
           })}
         </Select>
-        <RadioGroup onChange={ChangeRegist} value={param.isRegist ? '1' : '2'}>
+        <RadioGroup
+          onChange={ChangeRegist}
+          value={
+            param.status === 'Regist'
+              ? '3'
+              : param.status === 'NonRegist'
+              ? '2'
+              : '1'
+          }
+        >
           <Stack direction='row'>
-            <Radio value='2'>등록 안 된 것</Radio>
-            <Radio value='1'>태그 등록한 것만 보기</Radio>
+            <Radio value='1'>All</Radio>
+            <Radio value='2'>등록 NO</Radio>
+            <Radio value='3'>등록 YES</Radio>
           </Stack>
         </RadioGroup>
 
@@ -169,15 +222,6 @@ function Regist() {
             <Radio value='2'>전체보기</Radio>
           </Stack>
         </RadioGroup>
-        <RadioGroup
-          onChange={ChangeBeforeTenMin}
-          value={param.BeforeTenMin ? '1' : '2'}
-        >
-          <Stack direction='row'>
-            <Radio value='1'>태그 등록해도 10분간 등록 안된 칸에 표시</Radio>
-            <Radio value='2'>실시간으로 제외</Radio>
-          </Stack>
-        </RadioGroup>
 
         <div>
           <Heading>{total}</Heading>
@@ -186,10 +230,12 @@ function Regist() {
               <Box key={data.id}>
                 <Button
                   fontSize='1rem'
+                  border={data.is_regist && '1px solid red'}
+                  isActive={Number(nowId) === data.id}
                   w='100%'
                   marginTop='1rem'
                   value={data.id}
-                  onClick={ClickYogaName}
+                  onClick={(e) => ClickYogaName(e, data.naver_id)}
                 >
                   {data.name}
                 </Button>
@@ -206,13 +252,30 @@ function Regist() {
       <AddZoneContainer>
         <div>
           <Flex marginTop='1rem' padding='0 1rem'>
-            <Input placeholder='Basic usage' />
-            <Button w='40%'>등럭</Button>
+            <Input
+              placeholder='Basic usage'
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+            />
+            <Button w='40%' onClick={Submit}>
+              등럭
+            </Button>
           </Flex>
           <Flex marginTop='1rem' padding='0 1rem'>
             {recommand.map((data: any) => {
               return (
-                <Tag mr='1rem' key={data.id}>
+                <Tag
+                  mr='1rem'
+                  key={data.id}
+                  style={{ cursor: 'pointer' }}
+                  onClick={() =>
+                    setInputValue(
+                      inputValue === ''
+                        ? data.name
+                        : inputValue + ',' + data.name
+                    )
+                  }
+                >
                   {data.name}
                 </Tag>
               );
@@ -225,14 +288,14 @@ function Regist() {
             <Tag>태그없음</Tag>
           ) : (
             detail?.yogaSorts?.map((data: any) => {
-              return <>{data.name}</>;
+              return <Tag>{data.name}</Tag>;
             })
           )}
         </div>
       </AddZoneContainer>
 
       <IframeContainer>
-        <iframe src='https://m.place.naver.com/place/1264884214/home?entry=pll' />
+        <iframe src={iframeUrl} />
       </IframeContainer>
     </Container>
   );
