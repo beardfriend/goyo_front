@@ -50,4 +50,12 @@ export default class GoyoAPI {
       }
     });
   }
+
+  DeleteYogaSorts(idList, key) {
+    return this.axios().delete(`/admin/academy/${idList}`, {
+      headers: {
+        'X-API-Key': key || ''
+      }
+    });
+  }
 }

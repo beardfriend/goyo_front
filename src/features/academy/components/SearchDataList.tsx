@@ -4,6 +4,8 @@ import { BiSearchAlt2 } from 'react-icons/bi';
 import { IAcademySlice } from '../slices/AcademyListPageState';
 import React from 'react';
 import mq from '@Libs/theme/mediaQuery';
+import { useSelector } from 'react-redux';
+import { commonState } from '@Features/common/slices/CommonSlice';
 
 interface ISearchDataList {
   datas: IAcademySlice['category']['responseData'];
@@ -12,9 +14,10 @@ interface ISearchDataList {
 }
 
 function SearchDataList({ datas, isShow, onClick }: ISearchDataList) {
+  const commonData = useSelector(commonState);
   return (
     <SearchDataListContainer isShow={isShow}>
-      <ItemWrapper>
+      <ItemWrapper isMobile={commonData.isMobile}>
         {datas?.map((data) => {
           return (
             <ItemBox key={data.id} onClick={onClick}>
@@ -43,9 +46,9 @@ const SearchDataListContainer = styled.div<{ isShow }>`
   }}
 `;
 
-const ItemWrapper = styled.div`
+const ItemWrapper = styled.div<{ isMobile: boolean }>`
   width: 100%;
-  height: 37rem;
+  height: ${({ isMobile }) => (isMobile ? '37rem' : '48rem')};
   border: 2px solid #003d8d;
   border-top: none;
 `;

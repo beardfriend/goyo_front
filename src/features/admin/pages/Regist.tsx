@@ -43,6 +43,7 @@ function Regist() {
   const [detail, setDetail] = useState<any>({});
   const [noaddedList, setList] = useState<any>([]);
   const [total, setTotal] = useState(0);
+  const [deleteGroup, setDeleteGroup] = useState<any>([]);
   const [nowId, setNowId] = useState(0);
   const [inputValue, setInputValue] = useState('');
   const [param, setParams] = useState({
@@ -88,6 +89,7 @@ function Regist() {
     const res = await goyo.GetDetail(id);
     setDetail(res.data.result);
   }
+
   async function PostYogaSorts(data, key) {
     try {
       const res = await goyo.PostYogaSorts(data, key);
@@ -110,6 +112,26 @@ function Regist() {
       }
       toast({
         description: '등록 실패',
+        status: 'error'
+      });
+    }
+  }
+
+  async function DeleteYoga(idList) {
+    try {
+      const res = await goyo.DeleteYogaSorts(idList, param.key);
+
+      if (res.status === 200) {
+        toast({
+          description: '성공적으로 삭제.',
+          status: 'success'
+        });
+        getDetail(detail.id);
+        setInputValue('');
+      }
+    } catch (err) {
+      toast({
+        description: '삭제 실패',
         status: 'error'
       });
     }
@@ -149,7 +171,6 @@ function Regist() {
 
   function ClickYogaName(e, naver_id) {
     getDetail(e.currentTarget.value);
-    console.log(e.target.value);
     setNowId(e.target.value);
     setIframeUrl(`https://m.place.naver.com/place/${naver_id}/home`);
   }
@@ -171,6 +192,21 @@ function Regist() {
     PostYogaSorts({ value: value }, param.key);
   }
 
+  function ClickTag(id) {
+    if (deleteGroup.includes(id)) {
+      const newData = deleteGroup.filter((data) => data !== id);
+      setDeleteGroup(newData);
+    } else {
+      setDeleteGroup((group: any) => [...group, id]);
+    }
+    console.log(deleteGroup);
+  }
+
+  function DeleteYogaSorts() {
+    const list = deleteGroup.join(',');
+    DeleteYoga(list);
+  }
+
   useEffect(() => {
     if (firstRenderRef.current) {
       firstRenderRef.current = false;
@@ -181,7 +217,6 @@ function Regist() {
       return;
     }
     noAddedListFetch();
-    console.log(detail);
   }, [param]);
 
   return (
@@ -257,7 +292,7 @@ function Regist() {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
             />
-            <Button w='40%' onClick={Submit}>
+            <Button w='40%' onClick={Submit} colorScheme='pink'>
               등럭
             </Button>
           </Flex>
@@ -284,13 +319,33 @@ function Regist() {
 
           <Heading>{detail?.name}</Heading>
           <Heading>등록된 태그</Heading>
-          {detail?.yogaSorts?.length === 0 ? (
-            <Tag>태그없음</Tag>
-          ) : (
-            detail?.yogaSorts?.map((data: any) => {
-              return <Tag>{data.name}</Tag>;
-            })
-          )}
+          <Flex flexDir='column'>
+            <Flex flexWrap='wrap'>
+              {detail?.yogaSorts?.length === 0 ? (
+                <Tag>태그없음</Tag>
+              ) : (
+                detail?.yogaSorts?.map((data: any) => {
+                  return (
+                    <Tag
+                      w='5rem'
+                      style={{
+                        cursor: 'pointer'
+                      }}
+                      colorScheme={
+                        deleteGroup.includes(data.id) ? 'blue' : 'gray'
+                      }
+                      onClick={() => ClickTag(data.id)}
+                    >
+                      {data.name}
+                    </Tag>
+                  );
+                })
+              )}
+            </Flex>
+            <Button onClick={DeleteYogaSorts} mt='2rem' colorScheme='pink'>
+              선택된 태그 삭제하기
+            </Button>
+          </Flex>
         </div>
       </AddZoneContainer>
 
