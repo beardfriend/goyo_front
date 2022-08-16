@@ -40,7 +40,7 @@ export default class GoyoAPI {
   }
 
   GetAdminiStrations() {
-    return this.axios().get(`/admin/administrations`);
+    return this.axios().get(`/administrations`);
   }
 
   PostYogaSorts(data, key) {
