@@ -1,12 +1,14 @@
 import AcademyReducer from '@Features/academy/slices/AcademyListPageSlice';
 import CommonReducer from '@Features/common/slices/CommonSlice';
+import AdminRegistReducer from '@Features/admin/slices/RegistPageSlice';
 import { configureStore } from '@reduxjs/toolkit';
 import { useDispatch } from 'react-redux';
 
 export const store = configureStore({
   reducer: {
     academy: AcademyReducer,
-    common: CommonReducer
+    common: CommonReducer,
+    adminRegist: AdminRegistReducer
   }
 });
 

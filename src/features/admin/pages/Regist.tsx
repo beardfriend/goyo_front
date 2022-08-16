@@ -1,3 +1,4 @@
+import { useAppDispatch } from '@Apps/store';
 import {
   Box,
   Button,
@@ -16,15 +17,20 @@ import { setFontsize, setFullMode } from '@Features/common/slices/CommonSlice';
 import GoyoAPI from '@Shared/api/goyo';
 import { useEffect, useRef, useState } from 'react';
 import { useCookies } from 'react-cookie';
-import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
+import {
+  adminRegistState,
+  GET_DETAIL,
+  setAcademyId
+} from '../slices/RegistPageSlice';
 
 function Regist() {
   const goyo = new GoyoAPI();
+  const dispatch = useAppDispatch();
+  const state = useSelector(adminRegistState);
   const toast = useToast();
   const firstRenderRef = useRef(true);
   const [cookies] = useCookies(['key']);
-
-  const dispatch = useDispatch();
 
   const recommand = [
     {
@@ -40,11 +46,10 @@ function Regist() {
       name: '빈야사'
     }
   ];
-  const [detail, setDetail] = useState<any>({});
+
   const [noaddedList, setList] = useState<any>([]);
   const [total, setTotal] = useState(0);
   const [deleteGroup, setDeleteGroup] = useState<any>([]);
-  const [nowId, setNowId] = useState(0);
   const [inputValue, setInputValue] = useState('');
   const [param, setParams] = useState({
     pageNum: 1,
@@ -85,11 +90,6 @@ function Regist() {
     setAdministrations([...res.data.result.list]);
   }
 
-  async function getDetail(id) {
-    const res = await goyo.GetDetail(id);
-    setDetail(res.data.result);
-  }
-
   async function PostYogaSorts(data, key) {
     try {
       const res = await goyo.PostYogaSorts(data, key);
@@ -99,11 +99,12 @@ function Regist() {
           description: '성공적으로 등록됐습니다.',
           status: 'success'
         });
-        getDetail(detail.id);
+        dispatch(GET_DETAIL(state.academyId));
+
         setInputValue('');
       }
     } catch (err) {
-      if (detail.id === undefined) {
+      if (state.academy.id === undefined) {
         toast({
           description: '왼쪽에 학원을 클릭하세요',
           status: 'error'
@@ -126,7 +127,7 @@ function Regist() {
           description: '성공적으로 삭제.',
           status: 'success'
         });
-        getDetail(detail.id);
+        dispatch(GET_DETAIL(state.academyId));
         setInputValue('');
       }
     } catch (err) {
@@ -169,9 +170,10 @@ function Regist() {
     setParams({ ...param, pageNum: param.pageNum + 1 });
   }
 
-  function ClickYogaName(e, naver_id) {
-    getDetail(e.currentTarget.value);
-    setNowId(e.target.value);
+  function ClickYogaName(e: any, naver_id) {
+    e.preventDefault();
+    dispatch(setAcademyId(Number(e.currentTarget.value)));
+    dispatch(GET_DETAIL(Number(e.target.value)));
     setIframeUrl(`https://m.place.naver.com/place/${naver_id}/home`);
   }
 
@@ -186,7 +188,7 @@ function Regist() {
     let value = [] as {}[];
     const splited = inputValue.split(',');
     splited.forEach((data: any) => {
-      value = [...value, { naverPlaceId: detail.id, name: data }];
+      value = [...value, { naverPlaceId: state.academy.id, name: data }];
     });
 
     PostYogaSorts({ value: value }, param.key);
@@ -266,7 +268,7 @@ function Regist() {
                 <Button
                   fontSize='1rem'
                   border={data.is_regist && '1px solid red'}
-                  isActive={Number(nowId) === data.id}
+                  isActive={state.academyId === data.id}
                   w='100%'
                   marginTop='1rem'
                   value={data.id}
@@ -317,14 +319,14 @@ function Regist() {
             })}
           </Flex>
 
-          <Heading>{detail?.name}</Heading>
+          <Heading>{state.academy?.name}</Heading>
           <Heading>등록된 태그</Heading>
           <Flex flexDir='column'>
             <Flex flexWrap='wrap'>
-              {detail?.yogaSorts?.length === 0 ? (
+              {state.academy.yogaSorts.length === 0 ? (
                 <Tag>태그없음</Tag>
               ) : (
-                detail?.yogaSorts?.map((data: any) => {
+                state.academy.yogaSorts?.map((data) => {
                   return (
                     <Tag
                       w='5rem'
