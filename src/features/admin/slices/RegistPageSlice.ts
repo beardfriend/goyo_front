@@ -103,7 +103,9 @@ export const adminRegistSlice = createSlice({
     ) {
       state.loading.list = false;
       state.total = action.payload.result.total;
-      state.acadmies = action.payload.result.list;
+      for (let i = 0; i < action.payload.result.list.length; i++) {
+        state.acadmies.push(action.payload.result.list[i]);
+      }
     },
     [GET_LIST.rejected.type](state) {
       state.loading.list = false;
