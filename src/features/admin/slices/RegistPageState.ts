@@ -7,9 +7,9 @@ export interface IRegistSlice {
   getListParams: {
     pageNum: number;
     key: string;
-    staatus: string;
+    status: string;
     siGunGu: string;
-    containMeditaion: boolean;
+    containMeditation: boolean;
   };
 
   academy: {
@@ -20,6 +20,10 @@ export interface IRegistSlice {
       name: string;
     }[];
   };
+
+  administrations: {
+    si_gun_gu: string;
+  }[];
 
   acadmies: {
     id: number;
@@ -61,15 +65,18 @@ export const registinitialState: IRegistSlice = {
   getListParams: {
     pageNum: 1,
     key: '',
-    staatus: '',
+    status: '',
     siGunGu: '',
-    containMeditaion: false
+    containMeditation: false
   },
+
   academy: {
     id: 0,
     name: '',
     yogaSorts: []
   },
+
+  administrations: [],
 
   acadmies: [],
 

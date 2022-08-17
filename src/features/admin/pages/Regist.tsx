@@ -20,8 +20,12 @@ import { useCookies } from 'react-cookie';
 import { useSelector } from 'react-redux';
 import {
   adminRegistState,
+  GET_ADMINISTRATION,
   GET_DETAIL,
-  setAcademyId
+  GET_LIST,
+  setAcademyId,
+  setGetListParams,
+  setIframeUrl
 } from '../slices/RegistPageSlice';
 
 function Regist() {
@@ -47,47 +51,11 @@ function Regist() {
     }
   ];
 
-  const [noaddedList, setList] = useState<any>([]);
-  const [total, setTotal] = useState(0);
   const [deleteGroup, setDeleteGroup] = useState<any>([]);
   const [inputValue, setInputValue] = useState('');
-  const [param, setParams] = useState({
-    pageNum: 1,
-    key: '',
-    status: '',
-    siGunGu: '',
-    ContainMeditation: false
-  });
-  const [addLIst, setAdministrations] = useState<any>([]);
-  const [iframeUrl, setIframeUrl] = useState('');
-  async function noAddedListFetch() {
-    param.key = cookies.key as string;
-
-    const res = await goyo.GetAdminAcademies(param);
-    if (noaddedList.length === 0) {
-      setList([...res.data.result.list]);
-      setTotal(res.data.result.total);
-      return;
-    }
-    if (param.pageNum === 1) {
-      setList([...res.data.result.list]);
-    } else {
-      for (let i = 0; i < res.data.result.list.length; i++) {
-        setList((prev) => [...prev, res.data.result.list[i]]);
-      }
-    }
-
-    setTotal(res.data.result.total);
-  }
 
   function Reset() {
-    setList([]);
-  }
-
-  async function administration() {
-    const res = await goyo.GetAdminiStrations();
-
-    setAdministrations([...res.data.result.list]);
+    state.acadmies = [];
   }
 
   async function PostYogaSorts(data, key) {
@@ -120,7 +88,7 @@ function Regist() {
 
   async function DeleteYoga(idList) {
     try {
-      const res = await goyo.DeleteYogaSorts(idList, param.key);
+      const res = await goyo.DeleteYogaSorts(idList, state.getListParams.key);
 
       if (res.status === 200) {
         toast({
@@ -140,41 +108,79 @@ function Regist() {
 
   function ChangeRegist(e) {
     if (e === '1') {
-      setParams({ ...param, status: '', pageNum: 1 });
+      dispatch(
+        setGetListParams({ ...state.getListParams, status: '', pageNum: 1 })
+      );
     }
     if (e === '2') {
-      setParams({ ...param, status: 'NonRegist', pageNum: 1 });
+      dispatch(
+        setGetListParams({
+          ...state.getListParams,
+          status: 'NonRegist',
+          pageNum: 1
+        })
+      );
     }
     if (e === '3') {
-      setParams({ ...param, status: 'Regist', pageNum: 1 });
+      dispatch(
+        setGetListParams({
+          ...state.getListParams,
+          status: 'Regist',
+          pageNum: 1
+        })
+      );
     }
     Reset();
   }
 
   function ChangeMeditation(e) {
     if (e === '1') {
-      setParams({ ...param, ContainMeditation: false, pageNum: 1 });
+      dispatch(
+        setGetListParams({
+          ...state.getListParams,
+          containMeditation: false,
+          pageNum: 1
+        })
+      );
     }
     if (e === '2') {
-      setParams({ ...param, ContainMeditation: true, pageNum: 1 });
+      dispatch(
+        setGetListParams({
+          ...state.getListParams,
+          containMeditation: true,
+          pageNum: 1
+        })
+      );
     }
     Reset();
   }
 
   function changeSigunGu(e) {
-    setParams({ ...param, siGunGu: e.target.value, pageNum: 1 });
+    dispatch(
+      setGetListParams({
+        ...state.getListParams,
+        siGunGu: e.target.value,
+        pageNum: 1
+      })
+    );
+
     Reset();
   }
 
   function More() {
-    setParams({ ...param, pageNum: param.pageNum + 1 });
+    dispatch(
+      setGetListParams({
+        ...state.getListParams,
+        pageNum: state.getListParams.pageNum + 1
+      })
+    );
   }
 
   function ClickYogaName(e: any, naver_id) {
     e.preventDefault();
     dispatch(setAcademyId(Number(e.currentTarget.value)));
     dispatch(GET_DETAIL(Number(e.target.value)));
-    setIframeUrl(`https://m.place.naver.com/place/${naver_id}/home`);
+    dispatch(setIframeUrl(`https://m.place.naver.com/place/${naver_id}/home`));
   }
 
   function Submit() {
@@ -191,7 +197,7 @@ function Regist() {
       value = [...value, { naverPlaceId: state.academy.id, name: data }];
     });
 
-    PostYogaSorts({ value: value }, param.key);
+    PostYogaSorts({ value: value }, state.getListParams.key);
   }
 
   function ClickTag(id) {
@@ -211,21 +217,24 @@ function Regist() {
 
   useEffect(() => {
     if (firstRenderRef.current) {
+      dispatch(setGetListParams({ ...state.getListParams, key: cookies.key }));
       firstRenderRef.current = false;
       dispatch(setFontsize('20px'));
       dispatch(setFullMode(true));
-      administration();
-      noAddedListFetch();
+      dispatch(GET_ADMINISTRATION());
       return;
     }
-    noAddedListFetch();
-  }, [param]);
+    if (state.getListParams.key === '') {
+      return;
+    }
+    dispatch(GET_LIST(state.getListParams));
+  }, [state.getListParams]);
 
   return (
     <Container>
       <NoAddedList>
         <Select placeholder='Select option' onChange={changeSigunGu}>
-          {addLIst?.map((data: any, index) => {
+          {state.administrations?.map((data: any, index) => {
             return (
               <option key={index} value={data['si_gun_gu']}>
                 {data['si_gun_gu']}
@@ -236,9 +245,9 @@ function Regist() {
         <RadioGroup
           onChange={ChangeRegist}
           value={
-            param.status === 'Regist'
+            state.getListParams.status === 'Regist'
               ? '3'
-              : param.status === 'NonRegist'
+              : state.getListParams.status === 'NonRegist'
               ? '2'
               : '1'
           }
@@ -252,7 +261,7 @@ function Regist() {
 
         <RadioGroup
           onChange={ChangeMeditation}
-          value={param.ContainMeditation ? '2' : '1'}
+          value={state.getListParams.containMeditation ? '2' : '1'}
         >
           <Stack direction='row'>
             <Radio value='1'>요가원만 보기</Radio>
@@ -261,8 +270,8 @@ function Regist() {
         </RadioGroup>
 
         <div>
-          <Heading>{total}</Heading>
-          {noaddedList.map((data: any) => {
+          <Heading>{state.total}</Heading>
+          {state.acadmies.map((data: any) => {
             return (
               <Box key={data.id}>
                 <Button
@@ -352,7 +361,7 @@ function Regist() {
       </AddZoneContainer>
 
       <IframeContainer>
-        <iframe src={iframeUrl} />
+        <iframe src={state.iframeUrl} title='naverplace' />
       </IframeContainer>
     </Container>
   );

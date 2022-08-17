@@ -21,7 +21,7 @@ export default class GoyoAPI {
   }
 
   // ADMIN
-  GetAdminAcademies({ pageNum, key, status, siGunGu, ContainMeditation }) {
+  GetAdminAcademies({ pageNum, key, status, siGunGu, containMeditation }) {
     return this.axios().get(`/admin/academies`, {
       headers: {
         'X-API-Key': key || ''
@@ -30,7 +30,7 @@ export default class GoyoAPI {
         status: status,
         page_no: pageNum,
         si_gun_gu: siGunGu,
-        contain_meditation: ContainMeditation
+        contain_meditation: containMeditation
       }
     });
   }
