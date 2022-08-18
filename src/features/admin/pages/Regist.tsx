@@ -14,22 +14,24 @@ import {
 } from '@chakra-ui/react';
 import styled from '@emotion/styled/macro';
 import { setFontsize, setFullMode } from '@Features/common/slices/CommonSlice';
-import GoyoAPI from '@Shared/api/goyo';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { useCookies } from 'react-cookie';
 import { useSelector } from 'react-redux';
 import {
   adminRegistState,
+  DELETE_YOGASORTS,
   GET_ADMINISTRATION,
   GET_DETAIL,
   GET_LIST,
+  POST_YOGASORTS,
   setAcademyId,
+  setDeleteParams,
   setGetListParams,
-  setIframeUrl
+  setIframeUrl,
+  setInputValue
 } from '../slices/RegistPageSlice';
 
 function Regist() {
-  const goyo = new GoyoAPI();
   const dispatch = useAppDispatch();
   const state = useSelector(adminRegistState);
   const toast = useToast();
@@ -51,62 +53,13 @@ function Regist() {
     }
   ];
 
-  const [deleteGroup, setDeleteGroup] = useState<any>([]);
-  const [inputValue, setInputValue] = useState('');
-
   function Reset() {
-    state.acadmies = [];
+    dispatch(GET_LIST(state.getListParams));
+    dispatch(setInputValue(''));
+    dispatch(setDeleteParams(0));
   }
 
-  async function PostYogaSorts(data, key) {
-    try {
-      const res = await goyo.PostYogaSorts(data, key);
-
-      if (res.status === 201) {
-        toast({
-          description: '성공적으로 등록됐습니다.',
-          status: 'success'
-        });
-        dispatch(GET_DETAIL(state.academyId));
-
-        setInputValue('');
-      }
-    } catch (err) {
-      if (state.academy.id === undefined) {
-        toast({
-          description: '왼쪽에 학원을 클릭하세요',
-          status: 'error'
-        });
-        return;
-      }
-      toast({
-        description: '등록 실패',
-        status: 'error'
-      });
-    }
-  }
-
-  async function DeleteYoga(idList) {
-    try {
-      const res = await goyo.DeleteYogaSorts(idList, state.getListParams.key);
-
-      if (res.status === 200) {
-        toast({
-          description: '성공적으로 삭제.',
-          status: 'success'
-        });
-        dispatch(GET_DETAIL(state.academyId));
-        setInputValue('');
-      }
-    } catch (err) {
-      toast({
-        description: '삭제 실패',
-        status: 'error'
-      });
-    }
-  }
-
-  function ChangeRegist(e) {
+  function onChangeRegistRadio(e) {
     if (e === '1') {
       dispatch(
         setGetListParams({ ...state.getListParams, status: '', pageNum: 1 })
@@ -133,7 +86,7 @@ function Regist() {
     Reset();
   }
 
-  function ChangeMeditation(e) {
+  function onChangeMeditation(e) {
     if (e === '1') {
       dispatch(
         setGetListParams({
@@ -155,7 +108,7 @@ function Regist() {
     Reset();
   }
 
-  function changeSigunGu(e) {
+  function onChangeSigunGu(e) {
     dispatch(
       setGetListParams({
         ...state.getListParams,
@@ -176,52 +129,86 @@ function Regist() {
     );
   }
 
-  function ClickYogaName(e: any, naver_id) {
+  function handleYogaDetailClick(e: any, naver_id) {
     e.preventDefault();
     dispatch(setAcademyId(Number(e.currentTarget.value)));
     dispatch(GET_DETAIL(Number(e.target.value)));
     dispatch(setIframeUrl(`https://m.place.naver.com/place/${naver_id}/home`));
   }
 
-  function Submit() {
-    if (inputValue.length <= 1) {
+  function handlePostSubmit() {
+    if (state.inputValue.length <= 1) {
       toast({
         description: '글자수 키우세요.',
         status: 'warning'
       });
       return;
     }
-    let value = [] as {}[];
-    const splited = inputValue.split(',');
+    let value = [] as { naverPlaceId: number; name: string }[];
+    const splited = state.inputValue.split(',');
     splited.forEach((data: any) => {
       value = [...value, { naverPlaceId: state.academy.id, name: data }];
     });
 
-    PostYogaSorts({ value: value }, state.getListParams.key);
+    dispatch(
+      POST_YOGASORTS({
+        value: value,
+        key: state.getListParams.key
+      })
+    )
+      .unwrap()
+      .then(() => {
+        dispatch(GET_DETAIL(state.academy.id));
+        toast({
+          description: '성공적으로 등록됐습니다.',
+          status: 'success'
+        });
+        Reset();
+      })
+      .catch(() => {
+        toast({
+          description: '실패',
+          status: 'error'
+        });
+      });
   }
 
-  function ClickTag(id) {
-    if (deleteGroup.includes(id)) {
-      const newData = deleteGroup.filter((data) => data !== id);
-      setDeleteGroup(newData);
-    } else {
-      setDeleteGroup((group: any) => [...group, id]);
-    }
-    console.log(deleteGroup);
-  }
-
-  function DeleteYogaSorts() {
-    const list = deleteGroup.join(',');
-    DeleteYoga(list);
+  function handleDeleteSubmit() {
+    const list = state.deleteParams.join(',');
+    dispatch(DELETE_YOGASORTS({ idList: list, key: state.getListParams.key }))
+      .unwrap()
+      .then(() => {
+        dispatch(GET_DETAIL(state.academy.id));
+        toast({
+          description: '성공적으로 삭제했습니다.',
+          status: 'success'
+        });
+        Reset();
+      })
+      .catch((err) => {
+        if (err.status === 404) {
+          toast({
+            description: '태그를 선택해주세요',
+            status: 'error'
+          });
+          return;
+        }
+        toast({
+          description: '삭제에 실패했습니다.',
+          status: 'error'
+        });
+      });
   }
 
   useEffect(() => {
     if (firstRenderRef.current) {
-      dispatch(setGetListParams({ ...state.getListParams, key: cookies.key }));
-      firstRenderRef.current = false;
+      //디바이스 사이즈 세팅
       dispatch(setFontsize('20px'));
       dispatch(setFullMode(true));
+      // 파라미터 세팅
+      dispatch(setGetListParams({ ...state.getListParams, key: cookies.key }));
       dispatch(GET_ADMINISTRATION());
+      firstRenderRef.current = false;
       return;
     }
     if (state.getListParams.key === '') {
@@ -233,7 +220,7 @@ function Regist() {
   return (
     <Container>
       <NoAddedList>
-        <Select placeholder='Select option' onChange={changeSigunGu}>
+        <Select placeholder='Select option' onChange={onChangeSigunGu}>
           {state.administrations?.map((data: any, index) => {
             return (
               <option key={index} value={data['si_gun_gu']}>
@@ -243,7 +230,7 @@ function Regist() {
           })}
         </Select>
         <RadioGroup
-          onChange={ChangeRegist}
+          onChange={onChangeRegistRadio}
           value={
             state.getListParams.status === 'Regist'
               ? '3'
@@ -260,7 +247,7 @@ function Regist() {
         </RadioGroup>
 
         <RadioGroup
-          onChange={ChangeMeditation}
+          onChange={onChangeMeditation}
           value={state.getListParams.containMeditation ? '2' : '1'}
         >
           <Stack direction='row'>
@@ -281,7 +268,7 @@ function Regist() {
                   w='100%'
                   marginTop='1rem'
                   value={data.id}
-                  onClick={(e) => ClickYogaName(e, data.naver_id)}
+                  onClick={(e) => handleYogaDetailClick(e, data.naver_id)}
                 >
                   {data.name}
                 </Button>
@@ -300,10 +287,15 @@ function Regist() {
           <Flex marginTop='1rem' padding='0 1rem'>
             <Input
               placeholder='Basic usage'
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
+              value={state.inputValue}
+              onChange={(e) => dispatch(setInputValue(e.target.value))}
             />
-            <Button w='40%' onClick={Submit} colorScheme='pink'>
+            <Button
+              w='40%'
+              onClick={handlePostSubmit}
+              colorScheme='pink'
+              isLoading={state.loading.post}
+            >
               등럭
             </Button>
           </Flex>
@@ -315,10 +307,12 @@ function Regist() {
                   key={data.id}
                   style={{ cursor: 'pointer' }}
                   onClick={() =>
-                    setInputValue(
-                      inputValue === ''
-                        ? data.name
-                        : inputValue + ',' + data.name
+                    dispatch(
+                      setInputValue(
+                        state.inputValue === ''
+                          ? data.name
+                          : state.inputValue + ',' + data.name
+                      )
                     )
                   }
                 >
@@ -343,9 +337,9 @@ function Regist() {
                         cursor: 'pointer'
                       }}
                       colorScheme={
-                        deleteGroup.includes(data.id) ? 'blue' : 'gray'
+                        state.deleteParams.includes(data.id) ? 'blue' : 'gray'
                       }
-                      onClick={() => ClickTag(data.id)}
+                      onClick={() => dispatch(setDeleteParams(data.id))}
                     >
                       {data.name}
                     </Tag>
@@ -353,7 +347,7 @@ function Regist() {
                 })
               )}
             </Flex>
-            <Button onClick={DeleteYogaSorts} mt='2rem' colorScheme='pink'>
+            <Button onClick={handleDeleteSubmit} mt='2rem' colorScheme='pink'>
               선택된 태그 삭제하기
             </Button>
           </Flex>

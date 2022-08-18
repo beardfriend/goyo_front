@@ -9,7 +9,9 @@ export const store = configureStore({
     academy: AcademyReducer,
     common: CommonReducer,
     adminRegist: AdminRegistReducer
-  }
+  },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({ serializableCheck: false })
 });
 
 export const useAppDispatch = () => useDispatch<typeof store.dispatch>();

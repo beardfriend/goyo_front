@@ -2,7 +2,8 @@ import GoyoAPI from '@Shared/api/goyo';
 import { registinitialState, IRegistSlice } from './RegistPageState';
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '@Apps/store';
-import { useCookies } from 'react-cookie';
+import { AxiosResponse } from 'axios';
+import { Status } from '@chakra-ui/react';
 
 const goyo = new GoyoAPI();
 
@@ -42,6 +43,48 @@ export const GET_ADMINISTRATION = createAsyncThunk(
   }
 );
 
+export const POST_YOGASORTS = createAsyncThunk(
+  `adminRegist/POST_YOGASORTS`,
+  async (
+    {
+      value,
+      key
+    }: {
+      value: { naverPlaceId: number; name: string }[];
+      key: IRegistSlice['getListParams']['key'];
+    },
+    { rejectWithValue }
+  ) => {
+    try {
+      const res = await goyo.PostYogaSorts({ value }, key);
+      return res.status;
+    } catch (err: any) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const DELETE_YOGASORTS = createAsyncThunk(
+  `adminRegist/DELETE_YOGASORTS`,
+  async (
+    {
+      idList,
+      key
+    }: {
+      idList: string;
+      key: IRegistSlice['getListParams']['key'];
+    },
+    { rejectWithValue }
+  ) => {
+    try {
+      const res = await goyo.DeleteYogaSorts(idList, key);
+      return res;
+    } catch (err: any) {
+      return rejectWithValue(err.response);
+    }
+  }
+);
+
 export const adminRegistSlice = createSlice({
   name: 'adminRegist',
   initialState: registinitialState,
@@ -65,6 +108,10 @@ export const adminRegistSlice = createSlice({
     },
 
     setDeleteParams(state, action) {
+      if (action.payload === 0) {
+        state.deleteParams = [];
+        return;
+      }
       if (state.deleteParams.includes(action.payload)) {
         const newData = state.deleteParams.filter(
           (data) => data != action.payload
@@ -73,6 +120,10 @@ export const adminRegistSlice = createSlice({
       } else {
         state.deleteParams = [...state.deleteParams, action.payload];
       }
+    },
+
+    setInputValue(state, action) {
+      state.inputValue = action.payload;
     }
   },
   extraReducers: {
@@ -103,6 +154,10 @@ export const adminRegistSlice = createSlice({
     ) {
       state.loading.list = false;
       state.total = action.payload.result.total;
+      if (state.getListParams.pageNum === 1) {
+        state.acadmies = action.payload.result.list;
+        return;
+      }
       for (let i = 0; i < action.payload.result.list.length; i++) {
         state.acadmies.push(action.payload.result.list[i]);
       }
@@ -118,7 +173,34 @@ export const adminRegistSlice = createSlice({
       state.administrations = action.payload.result.list;
     },
 
-    [GET_ADMINISTRATION.rejected.type](state) {}
+    [GET_ADMINISTRATION.rejected.type](state) {},
+
+    //POST YOGA SORTS
+
+    [POST_YOGASORTS.pending.type](state) {
+      state.loading.post = true;
+    },
+    [POST_YOGASORTS.fulfilled.type](
+      state,
+      action: PayloadAction<AxiosResponse<Status>>
+    ) {
+      state.loading.post = false;
+    },
+    [POST_YOGASORTS.rejected.type](state) {
+      state.loading.post = false;
+    },
+
+    [DELETE_YOGASORTS.pending.type](state) {
+      state.loading.delete = true;
+    },
+
+    [DELETE_YOGASORTS.fulfilled.type](state) {
+      state.loading.delete = false;
+    },
+
+    [DELETE_YOGASORTS.rejected.type](state) {
+      state.loading.delete = false;
+    }
   }
 });
 
@@ -127,7 +209,8 @@ export const {
   setGetListParams,
   setIframeUrl,
   setTotal,
-  setDeleteParams
+  setDeleteParams,
+  setInputValue
 } = adminRegistSlice.actions;
 
 export const adminRegistState = (state: RootState) => state.adminRegist;

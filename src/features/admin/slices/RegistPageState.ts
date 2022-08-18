@@ -1,7 +1,11 @@
+import { UseToastOptions } from '@chakra-ui/react';
+
 export interface IRegistSlice {
   loading: {
     detail: boolean;
     list: boolean;
+    post: boolean;
+    delete: boolean;
   };
 
   getListParams: {
@@ -60,7 +64,9 @@ export interface IRegistSlice {
 export const registinitialState: IRegistSlice = {
   loading: {
     detail: false,
-    list: false
+    list: false,
+    post: false,
+    delete: false
   },
   getListParams: {
     pageNum: 1,
