@@ -18,7 +18,7 @@ function SearchDataList({ datas, isShow, onClick }: ISearchDataList) {
   return (
     <SearchDataListContainer isShow={isShow}>
       <ItemWrapper isMobile={commonData.isMobile}>
-        {datas?.map((data) => {
+        {datas.map((data) => {
           return (
             <ItemBox key={data.id} onClick={onClick}>
               <SearchIcon />

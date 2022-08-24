@@ -3,7 +3,7 @@ import styled from '@emotion/styled/macro';
 import { commonState } from '@Features/common/slices/CommonSlice';
 import mq from '@Libs/theme/mediaQuery';
 import MobileHeader from '@Shared/layout/header/components/MobileHeader';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import SearchDataList from '../components/SearchDataList';
@@ -23,18 +23,19 @@ function AcademySearchPage() {
   const commonData = useSelector(commonState);
   const [isFocus, setIsFocus] = useState(false);
 
-  useEffect(() => {
+  function dataFetch() {
     dispatch(setSearchListResponse([]));
     if (data.query.keyword.length === 0) {
       return;
     }
     dispatch(GET_CATEGORY(data.query.keyword));
-  }, [data.query.keyword]);
+  }
 
   const [isListShow, setIsListShow] = useState(false);
 
   function onChangeInput(e: React.FormEvent<HTMLInputElement>) {
     e.preventDefault();
+
     dispatch(setSearchKeyword(e.currentTarget.value));
     if (e.currentTarget.value.length > 0) {
       setIsListShow(true);
@@ -88,6 +89,7 @@ function AcademySearchPage() {
       <Container>
         <SearchFocusInput
           value={data.query.keyword}
+          onKeyup={dataFetch}
           placeholder='검색어를 입력해주세요'
           onClick={onClickBackSpace}
           searchClick={searchClick}
@@ -110,6 +112,7 @@ function AcademySearchPage() {
         <Banner>하고 싶은 요가를 검색해보세요.</Banner>
         <SearchInput
           onClick={handleClick}
+          onKeyUp={dataFetch}
           onFocus={onChangeFocus}
           value={data.query.keyword}
           placeholder='검색어를 입력해주세요'

@@ -8,6 +8,7 @@ interface ISearchInput {
   placeholder: React.HTMLInputTypeAttribute;
   isListShow: boolean;
   value: string;
+  onKeyUp: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   onChange: (e: React.FormEvent<HTMLInputElement>) => void;
   onFocus?: (e: React.FormEvent<HTMLInputElement>) => void;
   onClick: (e: React.FormEvent<HTMLButtonElement>) => void;
@@ -15,6 +16,7 @@ interface ISearchInput {
 
 function SearchInput({
   placeholder,
+  onKeyUp,
   isListShow,
   onChange,
   onFocus,
@@ -25,6 +27,7 @@ function SearchInput({
     <SearchInputWrapper>
       <Input
         value={value}
+        onKeyUp={onKeyUp}
         placeholder={placeholder}
         onChange={onChange}
         isListShow={isListShow}

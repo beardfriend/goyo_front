@@ -12,6 +12,7 @@ function DataList({ data }: IDataList) {
     <>
       {data.map((data) => {
         const { id, thumbUrl, name, phoneNum, commonAddress, yogaSorts } = data;
+
         let x =
           'https://thumbs.dreamstime.com/b/no-image-available-icon-flat-vector-no-image-available-icon-flat-vector-illustration-132482930.jpg';
 
@@ -25,8 +26,8 @@ function DataList({ data }: IDataList) {
               <Address>{commonAddress}</Address>
               <PhoneNum>{phoneNum}</PhoneNum>
               <HashTagBox>
-                {yogaSorts.map((data, index) => {
-                  return <HasTag key={index}> #{data.name}</HasTag>;
+                {yogaSorts.slice(0, 5).map((data, index) => {
+                  return <HasTag key={index}>#{data.name}</HasTag>;
                 })}
               </HashTagBox>
             </TextBox>

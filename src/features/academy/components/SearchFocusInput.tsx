@@ -7,6 +7,7 @@ import mq from '@Libs/theme/mediaQuery';
 interface ISearchInput extends React.InputHTMLAttributes<HTMLInputElement> {
   isListShow: boolean;
   value: string;
+  onKeyup: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   onChange: (e: React.FormEvent<HTMLInputElement>) => void;
   onClick: (e) => void;
   searchClick: (e: React.FormEvent<HTMLButtonElement>) => void;
@@ -17,6 +18,7 @@ function SearchFocusInput({
   isListShow,
   onChange,
   onClick,
+  onKeyup,
   searchClick,
   value
 }: ISearchInput) {
@@ -25,6 +27,7 @@ function SearchFocusInput({
       <Input
         autoFocus={true}
         value={value}
+        onKeyUp={onKeyup}
         placeholder={placeholder}
         onChange={onChange}
         isListShow={isListShow}
