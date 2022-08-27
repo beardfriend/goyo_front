@@ -11,6 +11,7 @@ import {
   setSearchListKeyword,
   setSearchListResponse
 } from '../slices/AcademyListPageSlice';
+import { setInputFocus } from '../slices/AcadmeySearchPageSlice';
 
 function AcademyListPage() {
   const [count, setCount] = useState(1);
@@ -38,6 +39,7 @@ function AcademyListPage() {
   function Back() {
     navigate('/');
     dispatch(setSearchListResponse([]));
+    dispatch(setInputFocus(false));
     dispatch(setSearchListKeyword(''));
     return;
   }
@@ -68,7 +70,7 @@ function AcademyListPage() {
 const DataListWrapper = styled.div`
   display: inline-block;
   position: relative;
-  margin-bottom: 20rem;
+  margin-bottom: 5rem;
   padding: 0 2rem;
   width: 100%;
   ${ListContainer} {

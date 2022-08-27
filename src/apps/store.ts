@@ -1,5 +1,6 @@
 import AcademyReducer from '@Features/academy/slices/AcademyListPageSlice';
 import CommonReducer from '@Features/common/slices/CommonSlice';
+import ACademySearchReducer from '@Features/academy/slices/AcadmeySearchPageSlice';
 import AdminRegistReducer from '@Features/admin/slices/RegistPageSlice';
 import { configureStore } from '@reduxjs/toolkit';
 import { useDispatch } from 'react-redux';
@@ -7,6 +8,7 @@ import { useDispatch } from 'react-redux';
 export const store = configureStore({
   reducer: {
     academy: AcademyReducer,
+    academySearch: ACademySearchReducer,
     common: CommonReducer,
     adminRegist: AdminRegistReducer
   },

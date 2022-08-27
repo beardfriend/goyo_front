@@ -27,7 +27,11 @@ function DataList({ data }: IDataList) {
               <PhoneNum>{phoneNum}</PhoneNum>
               <HashTagBox>
                 {yogaSorts.slice(0, 5).map((data, index) => {
-                  return <HasTag key={index}>#{data.name}</HasTag>;
+                  return (
+                    <>
+                      <HasTag key={index}>&nbsp;#{data.name}</HasTag>
+                    </>
+                  );
                 })}
               </HashTagBox>
             </TextBox>
@@ -70,7 +74,7 @@ const TextBox = styled.div`
 
 const Title = styled.h1`
   ${mq[0]} {
-    font-size: 2rem;
+    font-size: 1.8rem;
   }
   font-size: 2.5rem;
   font-weight: 700;
@@ -78,7 +82,7 @@ const Title = styled.h1`
 
 const Address = styled.p`
   ${mq[0]} {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
   }
   margin-top: 1.5rem;
   font-size: 1.5rem;
@@ -87,7 +91,7 @@ const Address = styled.p`
 
 const PhoneNum = styled.p`
   ${mq[0]} {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
   }
   font-size: 1.5rem;
   font-weight: 300;
@@ -102,7 +106,7 @@ const HashTagBox = styled.div`
 
 const HasTag = styled.p`
   ${mq[0]} {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
   }
   font-size: 1.5rem;
   font-weight: 700;

@@ -41,6 +41,15 @@ export interface IAcademySlice {
       isLoading: boolean;
     };
   };
+  ranking: {
+    responseData: {
+      id: number;
+      name: string;
+      score: number;
+      created_at: string;
+      updated_at: string;
+    }[];
+  };
 }
 
 export const academyinitialState: IAcademySlice = {
@@ -73,5 +82,8 @@ export const academyinitialState: IAcademySlice = {
       status: 'idle',
       isLoading: false
     }
+  },
+  ranking: {
+    responseData: []
   }
 };

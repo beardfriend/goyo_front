@@ -16,7 +16,7 @@ interface ISearchDataList {
 function SearchDataList({ datas, isShow, onClick }: ISearchDataList) {
   const commonData = useSelector(commonState);
   return (
-    <SearchDataListContainer isShow={isShow}>
+    <SearchDataListContainer isShow={isShow} isMobile={commonData.isMobile}>
       <ItemWrapper isMobile={commonData.isMobile}>
         {datas.map((data) => {
           return (
@@ -33,7 +33,13 @@ function SearchDataList({ datas, isShow, onClick }: ISearchDataList) {
 
 export default SearchDataList;
 
-const SearchDataListContainer = styled.div<{ isShow }>`
+const SearchDataListContainer = styled.div<{ isShow; isMobile }>`
+  position: absolute;
+  margin: 0 auto;
+  width: ${({ isMobile }) =>
+    isMobile ? 'calc(100% - 0rem)' : 'calc(100% - 20rem)'};
+  z-index: 1;
+  background: white;
   ${({ isShow }) => {
     if (isShow) {
       return css`
@@ -43,13 +49,13 @@ const SearchDataListContainer = styled.div<{ isShow }>`
     return css`
       display: none;
     `;
-  }}
+  }};
 `;
 
 const ItemWrapper = styled.div<{ isMobile: boolean }>`
   width: 100%;
   height: ${({ isMobile }) => (isMobile ? '37rem' : '48rem')};
-  border: 2px solid #003d8d;
+  border: ${({ isMobile }) => !isMobile && '2px solid gray;'};
   border-top: none;
 `;
 
@@ -69,8 +75,8 @@ const SearchIcon = styled(BiSearchAlt2)`
     height: 1.5rem;
   }
   margin-left: 2.4rem;
-  width: 3rem;
-  height: 3rem;
+  width: 1.5rem;
+  height: 1.5rem;
 `;
 
 const Text = styled.p`
@@ -79,7 +85,7 @@ const Text = styled.p`
     margin-left: 1.5rem;
   }
   margin-left: 2.5rem;
-  font-size: 2.5rem;
+  font-size: 1.5rem;
 `;
 
 SearchDataList.defaultProps = {

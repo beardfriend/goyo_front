@@ -1,3 +1,4 @@
+import '@Libs/theme/font.css';
 import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 import styled from '@emotion/styled';
 import AcademyListPage from '@Features/academy/pages/AcademyListPage';
@@ -22,7 +23,7 @@ export const App = () => {
           background: '#E5E5E5'
         },
         html: {
-          font: 'Noto Sans KR',
+          font: 'Spoqa Han Sans',
           fontSize: data.fontSize,
           boxSizing: 'border-box'
         }
@@ -31,11 +32,13 @@ export const App = () => {
   });
 
   const dispatch = useAppDispatch();
+
   useEffect(() => {
     if (window.innerWidth < 500) {
       dispatch(setIsMobile(true));
     }
   }, []);
+
   return (
     <ChakraProvider theme={theme}>
       <CookiesProvider>
@@ -54,7 +57,8 @@ export const App = () => {
 };
 
 const Container = styled.div<{ fullMode }>`
-  font-family: 'Noto Sans KR';
+  font-family: 'Spoqa Han Sans';
+  position: relative;
   font-size: 10px;
   max-width: ${({ fullMode }) => (fullMode ? '100%' : '768px')};
   min-height: 100vh;

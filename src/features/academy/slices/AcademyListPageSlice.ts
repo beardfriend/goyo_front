@@ -33,6 +33,33 @@ export const GET_LIST = createAsyncThunk(
   }
 );
 
+export const GET_RANKING = createAsyncThunk(
+  `academy/GET_RANKING`,
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await goyo.GetRanking();
+      return res.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const PUT_SCORE = createAsyncThunk(
+  `academy/PUT_SCORE`,
+  async (
+    { keyword, member }: { [key: string]: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const res = await goyo.UpdateSearchScore({ keyword, member });
+      return res.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 export const academySlice = createSlice({
   name: 'acadmey',
   initialState: academyinitialState,
@@ -83,11 +110,18 @@ export const academySlice = createSlice({
     [GET_LIST.rejected.type](state) {
       state.list.status.status = 'fail';
       state.list.status.isLoading = false;
+    },
+
+    [GET_RANKING.pending.type](state) {},
+
+    [GET_RANKING.fulfilled.type](state, action) {
+      state.ranking.responseData = action.payload.result;
     }
   }
 });
 export const categoryState = (state: RootState) => state.academy.category;
 export const listState = (state: RootState) => state.academy.list;
+export const rankingState = (state: RootState) => state.academy.ranking;
 export const {
   setSearchKeyword,
   setSearchListKeyword,

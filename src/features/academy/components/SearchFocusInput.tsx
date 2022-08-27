@@ -14,13 +14,13 @@ interface ISearchInput extends React.InputHTMLAttributes<HTMLInputElement> {
 }
 
 function SearchFocusInput({
+  value,
   placeholder,
   isListShow,
   onChange,
   onClick,
   onKeyup,
-  searchClick,
-  value
+  searchClick
 }: ISearchInput) {
   return (
     <SearchInputWrapper>
@@ -83,19 +83,15 @@ const Input = styled.input<{ isListShow }>`
   height: 5rem;
   font-size: 1.5rem;
   padding-left: 6rem;
-
   outline: none;
   width: 100%;
-  border: 1px solid #003d8d;
-
-  border-bottom: ${({ isListShow }) => isListShow && 'none'};
+  border-bottom: 1px solid gray;
 
   &::placeholder {
     color: #b9b9b9;
   }
 
   &:focus {
-    border: 2px solid #003d8d !important;
     background: #f4f4f4;
   }
 

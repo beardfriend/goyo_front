@@ -19,6 +19,13 @@ export default class GoyoAPI {
       `/v1/academy/list?yoga_sort=${keyword}&page_no=${pageNum}`
     );
   }
+  UpdateSearchScore(data) {
+    return this.axios().put(`/yoga/sorts/score`, data);
+  }
+
+  GetRanking() {
+    return this.axios().get(`/yoga/sorts/ranking`);
+  }
 
   // ADMIN
   GetAdminAcademies({ pageNum, key, status, siGunGu, containMeditation }) {

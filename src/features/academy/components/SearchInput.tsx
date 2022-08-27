@@ -33,9 +33,6 @@ function SearchInput({
         isListShow={isListShow}
         onFocus={onFocus}
       />
-      <LogoIconWrapper>
-        <LogoIcon />
-      </LogoIconWrapper>
       <SearchButton onClick={onClick}>
         <SearchIcon />
       </SearchButton>
@@ -76,8 +73,8 @@ const SearchButton = styled.button`
 
 const SearchIcon = styled(BiSearchAlt2)`
   ${mq[0]} {
-    width: 2.5rem;
-    height: 2.5rem;
+    width: 2rem;
+    height: 2rem;
   }
   width: 3rem;
   height: 3rem;
@@ -85,25 +82,24 @@ const SearchIcon = styled(BiSearchAlt2)`
 
 const Input = styled.input<{ isListShow }>`
   ${mq[0]} {
-    height: 5rem;
-    font-size: 1.5rem;
-    padding-left: 6rem;
+    height: 4rem;
+    font-size: 1.2rem;
+    padding-left: 3rem;
   }
   outline: none;
-  padding-left: 8rem;
+  padding-left: 5rem;
   width: 100%;
-  height: 6rem;
-  border: 1px solid #003d8d;
+  height: 4.5rem;
+  border: 2px solid gray;
   border-radius: ${(props) => (props.isListShow ? '2rem 2rem 0 0' : '2rem')};
 
   border-bottom: ${({ isListShow }) => isListShow && 'none'};
-  font-size: 2.5rem;
+  font-size: 1.5rem;
   &::placeholder {
     color: #b9b9b9;
   }
 
   &:focus {
-    border: 2px solid #003d8d !important;
     background: #f4f4f4;
   }
 
