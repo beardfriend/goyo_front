@@ -3,7 +3,7 @@ import axios from 'axios';
 export default class GoyoAPI {
     axios() {
         return axios.create({
-            baseURL: process.env.NODE_ENV === 'production' ? 'http://3.36.55.153/api' : 'http://localhost:8000/api'
+            baseURL: process.env.NODE_ENV === 'production' ? 'http://13.125.114.252/api' : 'http://localhost:8000/api'
         });
     }
 
